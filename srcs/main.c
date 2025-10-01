@@ -34,11 +34,16 @@ int main(int ac, char **av)
 		return (1);
 	if (fill_map_struct(av[1], map))
 		return (1);
-	printf("North:   %s\n", map->north);
-	printf("East:    %s\n", map->east);
-	printf("South:   %s\n", map->south);
-	printf("West:    %s\n", map->west);
-	printf("Ceiling: %d\n", map->ceiling);
-	printf("Floor:   %d\n", map->floor);
+	printf("Map_fd:   %d\n", map->fd);
+	printf("North:    %s\n", map->north);
+	printf("North_fd: %d\n", map->n_fd);
+	printf("East:     %s\n", map->east);
+	printf("East_fd:  %d\n", map->e_fd);
+	printf("South:    %s\n", map->south);
+	printf("South_fd: %d\n", map->s_fd);
+	printf("West:     %s\n", map->west);
+	printf("West_fd:  %d\n", map->w_fd);
+	printf("Ceiling:  %d\n", map->ceiling);
+	printf("Floor:    %d\n", map->floor);
 	return (0);
 }

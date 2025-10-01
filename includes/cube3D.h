@@ -12,6 +12,10 @@
 typedef struct s_map
 {
 	int		fd;
+	int		e_fd;
+	int		n_fd;
+	int		s_fd;
+	int		w_fd;
 	int		flag;
 	char	*north;
 	char	*east;

@@ -10,13 +10,9 @@ int	ft_isvalid(char *str)
 	j = 0;
 	while (str[++i] != '\0')
 	{
-		if (str[i] != ' ' && (str[i] < '0' || str[i] > '9')) // yinr r den oluyor
-		{
-			printf("str C = %d\n", str[i]);
-			printf("girdi mi\n");
+		if (str[i] != ' ' && (str[i] < '0' || str[i] > '9') && str[i] != '\n') // yinr r den oluyor
 			return (-1);
-		}
-	if (str[i] >= '0' && str[i] <= '9')
+		if (str[i] >= '0' && str[i] <= '9')
 			j++;
 	}
 	number = malloc((sizeof(char) * j) + 1);
@@ -35,38 +31,28 @@ int	ft_isvalid(char *str)
 
 int check_coloring(char *line)
 {
-    int		r;
+	int		r;
 	int		g;
 	int		b;
-    char	**numbers;
+	char	**numbers;
 
-	printf("coloring line == %s\n", line);
-    if (!line)
-	{
-        return (-1);
-	}
+	if (!line)
+		return (-1);
 	numbers = ft_split(line, ',');
-    if (!numbers)
-        return (-1);
-    if (!numbers[0] || !numbers[1] || !numbers[2] || numbers[3] != NULL)
-    {
-		free_array(numbers);
-        return (-1);
-    }
-    r = ft_isvalid(numbers[0]);
-    g = ft_isvalid(numbers[1]);
-    b = ft_isvalid(numbers[2]);
-    free_array(numbers);
-	printf("r = %d\n", r);
-	printf("g = %d\n", g);
-	printf("b = %d\n", b);
-
-    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+	if (!numbers)
+		return (-1);
+	if (!numbers[0] || !numbers[1] || !numbers[2] || numbers[3] != NULL)
 	{
-		printf("girdi mi\n");
-        return (-1);
+		free_array(numbers);
+		return (-1);
 	}
-    return ((r << 16) | (g << 8) | b);
+	r = ft_isvalid(numbers[0]);
+	g = ft_isvalid(numbers[1]);
+	b = ft_isvalid(numbers[2]);
+	free_array(numbers);
+	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+		return (-1);
+	return ((r << 16) | (g << 8) | b);
 }
 
 int	check_identifiers(t_map *map, char *line)
@@ -90,8 +76,6 @@ int	check_identifiers(t_map *map, char *line)
 		printf("Wrong map identifier\n");
 		return (1);
 	}
-
-
 	if (map->floor == -1 || map->ceiling == -1)
 	{
 		printf("Wrong color input\n");
@@ -127,31 +111,78 @@ int check_map_elements(t_map *map)
 	{
 		if (check_tab(line))
 			map->flag = 1;
-		trimmed_line = ft_strtrim(line, " ");
-		if (trimmed_line[0] == '\0' || trimmed_line[0] == '\n'|| trimmed_line[0] == '\r') // r windows için eklendi
+		trimmed_line = ft_strtrim(line, " \n");
+		
+		if (trimmed_line[0] == '\0' || trimmed_line[0] == '\n')
 		{
 			free(line);
 			free(trimmed_line);
 			continue;
 		}
 		count++;
-		if (count < 6)
+		if (count < 7)
 		{
 			if (check_identifiers(map, trimmed_line))
 				return (1);
 		}
+/* 		else if (check_map_lines(trimmed_line))
+			return(1); */
 		else
-		{
-			printf("map_control\n");
 			return (0);
-			
-		}
 		free(line);
 		free(trimmed_line);
 	}
 	return (0);
 }
 
+int check_files_names(t_map *map)
+{
+	int len;
+
+	len = ft_strlen(map->east);
+	if (map->east[len - 1] != 'm' && map->east[len - 2] != 'p' &&
+		map->east[len - 3] != 'x' && map->east[len - 4] != '.')
+			return (1);
+	len = ft_strlen(map->west);
+	if (map->west[len - 1] != 'm' && map->west[len - 2] != 'p' &&
+		map->west[len - 3] != 'x' && map->west[len - 4] != '.')
+			return (1);
+	len = ft_strlen(map->south);
+	if (map->south[len - 1] != 'm' && map->south[len - 2] != 'p' &&
+		map->south[len - 3] != 'x' && map->south[len - 4] != '.')
+			return (1);
+	len = ft_strlen(map->north);
+	if (map->north[len - 1] != 'm' && map->north[len - 2] != 'p' &&
+		map->north[len - 3] != 'x' && map->north[len - 4] != '.')
+			return (1);
+	return (0);
+}
+
+int	check_files(t_map *map)
+{
+	int	flag;
+
+	flag = 0;
+	if (check_files_names(map))
+		flag = 2;
+	map->e_fd = open(map->east, O_RDONLY);
+	map->s_fd = open(map->south, O_RDONLY);
+	map->n_fd = open(map->north, O_RDONLY);
+	map->w_fd = open(map->west, O_RDONLY);
+	if (map->e_fd == -1 || map->w_fd == -1 || map->n_fd == -1 || map->s_fd == -1)
+		flag = 1;
+	if (flag == 1)
+	{
+		printf("Can't open textures files!\n");
+		return (1);
+	}
+	else if (flag == 2)
+	{
+		printf("Wrong texture file name!\n");
+		return (1);
+	}
+	return (0);
+}
 
 int fill_map_struct(char *map_file, t_map *map)
 {
@@ -162,6 +193,8 @@ int fill_map_struct(char *map_file, t_map *map)
 		return (1);
 	}
 	if (check_map_elements(map))
+		return (1);
+	if (check_files(map))
 		return (1);
 	return (0);
 }
