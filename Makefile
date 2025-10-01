@@ -1,12 +1,12 @@
 NAME = cube3D
 
-SRCS = srcs/main.c
+SRCS = srcs/main.c srcs/map.c srcs/utils.c get_next_line/get_next_line.c get_next_line/get_next_line_utils.c \
 
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 LIBFT = includes/libft/libft.a
 

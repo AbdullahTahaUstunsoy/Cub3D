@@ -17,9 +17,12 @@ typedef struct s_map
 	char	*east;
 	char	*south;
 	char	*west;
-	char	*ceiling;
-	char	*floor;
+	int		ceiling;
+	int		floor;
 
 }			t_map;
 
+
+int fill_map_struct(char *map_file, t_map *map);
+void	free_array(char **str);
 #endif
