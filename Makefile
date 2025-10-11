@@ -1,12 +1,13 @@
-NAME = cube3D
+NAME = cub3D
 
 SRCS = srcs/main.c srcs/map.c srcs/utils.c get_next_line/get_next_line.c get_next_line/get_next_line_utils.c \
+		srcs/map_control.c
 
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 
 LIBFT = includes/libft/libft.a
 

@@ -104,14 +104,19 @@ int check_map_elements(t_map *map)
 {
 	int		count;
 	char	*line;
+	int		i;
 	char	*trimmed_line;
+	int		map_size;
 
+	map_size = 0;
 	count = 0;
+	i = 0;
+	map->map = malloc(sizeof(char *));
 	while ((line = get_next_line(map->fd)))
 	{
 		if (check_tab(line))
 			map->flag = 1;
-		trimmed_line = ft_strtrim(line, " \n");
+		trimmed_line = ft_strtrim(line, "\n");
 		
 		if (trimmed_line[0] == '\0' || trimmed_line[0] == '\n')
 		{
@@ -127,8 +132,12 @@ int check_map_elements(t_map *map)
 		}
 /* 		else if (check_map_lines(trimmed_line))
 			return(1); */
-		else
-			return (0);
+		else 
+		{
+			if (map_fill(map, trimmed_line, map_size))
+				return (1);
+			map_size++;
+		}
 		free(line);
 		free(trimmed_line);
 	}
@@ -196,5 +205,17 @@ int fill_map_struct(char *map_file, t_map *map)
 		return (1);
 	if (check_files(map))
 		return (1);
+	map->copy_map = copy_map(map);
+	if (map->copy_map == NULL)
+		return (1);
+	map_control(map);
+	if (find_player_position(map))
+		return (1);
+	flood_fill(map, map->player->pos_x, map->player->pos_y, '0', 'F');
+	if (flood_check(map, map->player->pos_x, map->player->pos_y))
+	{
+		printf("Map is not closed!!!\n");
+		return (1);
+	}
 	return (0);
 }
