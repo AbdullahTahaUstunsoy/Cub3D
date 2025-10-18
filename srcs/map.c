@@ -147,8 +147,8 @@ int check_map_elements(t_map *map)
 			if (check_identifiers(map, trimmed_line))
 				return (1);
 		}
-		if (check_invalid_map_line(trimmed_line))
-			return (1);
+/* 		if (check_invalid_map_line(trimmed_line))
+			return (1); */
 /* 		else if (check_map_lines(trimmed_line))
 			return(1); */
 		else 
