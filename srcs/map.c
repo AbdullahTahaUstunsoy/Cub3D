@@ -1,5 +1,89 @@
 #include "../includes/cube3D.h"
 
+int double_map_check(t_map *map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (map->copy_map[i])
+	{
+		j = 0;
+		while (map->copy_map[i][j])
+		{
+			if (map->copy_map[i][j] == '1' || map->copy_map[i][j] == '0')
+			{
+				printf("Double map error!!!\n");
+				return (1);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+void	find_start_position(t_map *map)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	while (map->copy_map[y])
+	{
+		while (map->copy_map[y][x])
+		{
+			if (map->copy_map[y][x] == '1')
+			{
+				map->start_x = x;
+				map->start_y = y;
+				return ;
+			}
+			x++;
+		}
+		y++;
+	}
+}
+
+void double_map_flood(t_map *map, int x, int y)
+
+{
+    if (x < 0 || y < 0 || y >= map->map_height)
+        return;
+
+    if (map->copy_map[y][x] == '*' || map->copy_map[y][x] == 'T' || map->copy_map[y][x] == '\0' || map->copy_map[y][x] == '\n')
+        return;
+
+    map->copy_map[y][x] = 'T';
+
+    double_map_flood(map, x + 1, y);
+    double_map_flood(map, x - 1, y);
+    double_map_flood(map, x, y + 1);
+    double_map_flood(map, x, y - 1);
+
+}
+
+int check_invalid_map_line(char *line)
+{
+    int i;
+
+	i = 0;
+    while (line[i])
+    {
+        if (line[i] != '0' && line[i] != '1' && line[i] != ' ' &&
+            line[i] != 'N' && line[i] != 'S' &&
+            line[i] != 'E' && line[i] != 'W' && line[i] != '\n')
+        {
+            printf("Invalid character in map %c line %d!!!\n", line[i], i);
+            return (1);
+        }
+        i++;
+    }
+    return (0);
+}
+
 int	ft_isvalid(char *str)
 {
 	int		i;
@@ -104,20 +188,32 @@ int check_map_elements(t_map *map)
 {
 	int		count;
 	char	*line;
-	int		i;
 	char	*trimmed_line;
 	int		map_size;
 
 	map_size = 0;
 	count = 0;
-	i = 0;
 	map->map = malloc(sizeof(char *));
+	if (!map->map)
+		return (1);
+	/* start with empty, NULL-terminated map array */
+	map->map[0] = NULL;
 	while ((line = get_next_line(map->fd)))
 	{
 		if (check_tab(line))
 			map->flag = 1;
-		trimmed_line = ft_strtrim(line, "\n");
-		
+		if (count < 7)
+			trimmed_line = ft_strtrim(line, "\n");
+		else
+		{
+			if (line[0] == '\n')
+				trimmed_line = ft_strdup(" \n");
+			else
+			{
+				trimmed_line = ft_strtrim(line, "\n");
+			}
+			//free(line);
+		}
 		if (trimmed_line[0] == '\0' || trimmed_line[0] == '\n')
 		{
 			free(line);
@@ -134,6 +230,8 @@ int check_map_elements(t_map *map)
 			return(1); */
 		else 
 		{
+			if (check_invalid_map_line(trimmed_line))
+				return (1);
 			if (map_fill(map, trimmed_line, map_size))
 				return (1);
 			map_size++;
@@ -217,5 +315,9 @@ int fill_map_struct(char *map_file, t_map *map)
 		printf("Map is not closed!!!\n");
 		return (1);
 	}
+	find_start_position(map);
+	double_map_flood(map, map->start_x, map->start_y);
+	if (double_map_check(map))
+		return (1);
 	return (0);
 }

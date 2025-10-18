@@ -1,23 +1,25 @@
 #include "../includes/cube3D.h"
 
-int	flood_check(t_map *map, int x, int y)
+int flood_check(t_map *map, int x, int y)
 {
-	if (y < 0 || x < 0 || !map->copy_map[y] || map->copy_map[y][x] == '\0')
-		return (1);
-	if (map->copy_map[y][x] == '1' || map->copy_map[y][x] == 'F')
-		return (0);
-	if (map->copy_map[y][x] == ' ' || map->copy_map[y][x] == '*')
-		return (1);
+    if (x < 0 || y < 0 || !map->copy_map[y] || !map->copy_map[y][x])
+        return 1; // sınır dışı veya \0
+    if (map->copy_map[y][x] == '*' || map->copy_map[y][x] == '0')
+        return 1; // hatalı durum
 
-	map->copy_map[y][x] = 'F';
+    if (map->copy_map[y][x] != 'F')
+        return 0; // F değilse dur
 
-	return (
-		flood_check(map, x + 1, y) ||
-		flood_check(map, x - 1, y) ||
-		flood_check(map, x, y + 1) ||
-		flood_check(map, x, y - 1)
-	);
+    map->copy_map[y][x] = 'V'; // Ziyaret edildi olarak işaretle
+
+    if (flood_check(map, x + 1, y)) return 1;
+    if (flood_check(map, x - 1, y)) return 1;
+    if (flood_check(map, x, y + 1)) return 1;
+    if (flood_check(map, x, y - 1)) return 1;
+
+    return 0;
 }
+
 
 void	flood_fill(t_map *map, int x, int y, char target, char fill)
 {
@@ -92,12 +94,13 @@ int	character_check(t_map *map)
 			if (map->map[i][j] != '1' && map->map[i][j] != '0'
 				&& map->map[i][j] != ' ')
 					if (map->map[i][j] != 'N' && map->map[i][j] != 'S'
-				&& map->map[i][j] != 'E' && map->map[i][j] != 'W')
+				&& map->map[i][j] != 'E' && map->map[i][j] != 'W'
+				&& map->map[i][j] != '\n')
 				{
+					printf("%s\n", map->map[i]);
 					flag = 1;
 					c = map->map[i][j];	
 				}
-					
 			j++;
 		}
 		i++;
@@ -140,22 +143,31 @@ int map_control(t_map *map)
 	while (map->copy_map[++i] != NULL)
 	{
 		tmp = ft_strlen(map->copy_map[i]);
-		if (tmp < length)
+		new_line = malloc(length + 1);
+		if (!new_line)
+			return (1);
+
+		// Satırın mevcut karakterlerini kopyala
+		ft_memcpy(new_line, map->copy_map[i], tmp);
+
+		// Boşluk karakterlerini '*' yap
+		for (size_t j = 0; j < tmp; j++)
 		{
-			new_line = malloc(length + 1);
-			if (!new_line)
-				return (1);
-			ft_memcpy(new_line, map->copy_map[i], tmp);
-			while (tmp < length)
-				new_line[tmp++] = '*';
-			new_line[length] = '\0';
-			free(map->copy_map[i]);
-			map->copy_map[i] = new_line;
+			if (new_line[j] == ' ')
+				new_line[j] = '*';
 		}
+
+		// Satır sonundaki eksikleri '*' ile doldur
+		while (tmp < length)
+			new_line[tmp++] = '*';
+
+		new_line[length] = '\0';
+		free(map->copy_map[i]);
+		map->copy_map[i] = new_line;
 	}
-	
 	return (0);
 }
+
 
 char	**copy_map(t_map *map)
 {
@@ -193,7 +205,8 @@ int	map_fill(t_map *map, char *line, int map_size)
 
 	i = 0;
 	map->map_height++;
-	new_map = malloc((map_size + 1) * sizeof(char *));
+	/* allocate existing entries + new entry + NULL terminator */
+	new_map = malloc((map_size + 2) * sizeof(char *));
 
 	if (!new_map)
 		return (1);
@@ -203,6 +216,7 @@ int	map_fill(t_map *map, char *line, int map_size)
 		i++;
 	}
 	new_map[map_size] = ft_strdup(line);
+	new_map[map_size + 1] = NULL;
 	free(map->map);
 	map->map = new_map;
 	return (0);

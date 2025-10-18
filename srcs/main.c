@@ -32,6 +32,7 @@ int main(int ac, char **av)
 		printf("Wrong argument count!\n");
 		return (1);
 	}
+	map->map_height = 0;
 	map->player = player_s;
 	if (check_map_name(av[1]))
 		return (1);
@@ -50,7 +51,10 @@ int main(int ac, char **av)
 	printf("Floor:    %d\n", map->floor);
 	printf("Player Position X : %lf\n", map->player->pos_x);
 	printf("Player Position Y : %lf\n", map->player->pos_y);
-	printf("Player Direciton : %c\n", map->player->player_dir);
+	printf("Player Direciton : %c\n", map->player->player_dir); //BUNA BAKKKKKK
+	printf("Start X position : %d\n", map->start_x);
+	printf("Start Y position : %d\n", map->start_y);
+
 
 	int i = 0;
 	while (i < 16)

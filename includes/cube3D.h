@@ -24,6 +24,8 @@ typedef struct s_player
 typedef struct s_map
 {
 	int			fd;
+	int			start_x;
+	int			start_y;
 	int			e_fd;
 	int			n_fd;
 	int			s_fd;
