@@ -31,7 +31,7 @@ char	*i_have_one_line(int fd, char *buffer)
 			return (NULL);
 		}
 		temp_buffer[char_read] = '\0';
-		buffer = ft_strjoin(buffer, temp_buffer);
+		buffer = ft_strjoin_g(buffer, temp_buffer);
 	}
 	free(temp_buffer);
 	return (buffer);

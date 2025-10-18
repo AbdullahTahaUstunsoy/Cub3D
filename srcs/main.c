@@ -23,13 +23,16 @@ int check_map_name(char *str)
 int main(int ac, char **av)
 {
 	t_map	*map;
+	t_player	*player_s;
 
+	player_s = malloc(sizeof(t_player));
 	map = malloc(sizeof(t_map));
 	if (ac != 2)
 	{
 		printf("Wrong argument count!\n");
 		return (1);
 	}
+	map->player = player_s;
 	if (check_map_name(av[1]))
 		return (1);
 	if (fill_map_struct(av[1], map))
@@ -45,6 +48,10 @@ int main(int ac, char **av)
 	printf("West_fd:  %d\n", map->w_fd);
 	printf("Ceiling:  %d\n", map->ceiling);
 	printf("Floor:    %d\n", map->floor);
+	printf("Player Position X : %lf\n", map->player->pos_x);
+	printf("Player Position Y : %lf\n", map->player->pos_y);
+	printf("Player Direciton : %c\n", map->player->player_dir);
+
 	int i = 0;
 	while (i < 16)
 	{

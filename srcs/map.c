@@ -1,5 +1,24 @@
 #include "../includes/cube3D.h"
 
+int check_invalid_map_line(char *line)
+{
+    int i;
+
+	i = 0;
+    while (line[i])
+    {
+        if (line[i] != '0' && line[i] != '1' && line[i] != ' ' &&
+            line[i] != 'N' && line[i] != 'S' &&
+            line[i] != 'E' && line[i] != 'W')
+        {
+            printf("Invalid character in map!!!\n");
+            return (1);
+        }
+        i++;
+    }
+    return (0);
+}
+
 int	ft_isvalid(char *str)
 {
 	int		i;
@@ -104,19 +123,17 @@ int check_map_elements(t_map *map)
 {
 	int		count;
 	char	*line;
-	int		i;
 	char	*trimmed_line;
 	int		map_size;
 
 	map_size = 0;
 	count = 0;
-	i = 0;
 	map->map = malloc(sizeof(char *));
 	while ((line = get_next_line(map->fd)))
 	{
 		if (check_tab(line))
 			map->flag = 1;
-		trimmed_line = ft_strtrim(line, "\n");
+		trimmed_line = ft_strtrim(line, "\n\r");//windows için \r eklendi
 		
 		if (trimmed_line[0] == '\0' || trimmed_line[0] == '\n')
 		{
@@ -130,13 +147,14 @@ int check_map_elements(t_map *map)
 			if (check_identifiers(map, trimmed_line))
 				return (1);
 		}
+		if (check_invalid_map_line(trimmed_line))
+			return (1);
 /* 		else if (check_map_lines(trimmed_line))
 			return(1); */
 		else 
 		{
 			if (map_fill(map, trimmed_line, map_size))
 				return (1);
-			
 			map_size++;
 		}
 		free(line);
@@ -206,6 +224,17 @@ int fill_map_struct(char *map_file, t_map *map)
 		return (1);
 	if (check_files(map))
 		return (1);
+	map->copy_map = copy_map(map);
+	if (map->copy_map == NULL)
+		return (1);
 	map_control(map);
+	if (find_player_position(map))
+		return (1);
+	flood_fill(map, map->player->pos_x, map->player->pos_y, '0', 'F');
+	if (flood_check(map, map->player->pos_x, map->player->pos_y))
+	{
+		printf("Map is not closed!!!\n");
+		return (1);
+	}
 	return (0);
 }
