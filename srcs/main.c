@@ -24,7 +24,7 @@ int check_map_name(char *str)
 void set_player (t_player *player)
 {
     player->pos_x = player->pos_x + 0.5; 
-    player->pos_y = player->pos_y + 0.5;  
+    player->pos_y = player->pos_y + 0.5;
 }
 
 void set_player_speed (t_player *player)
@@ -196,6 +196,7 @@ static void	put_pixel(t_texture *img, int x, int y, int color)
 
 void load_textures(t_game *game)
 {
+	//NULL kontrollerini ekle
 	printf("NORTH TEXTURE = %s\n", game->map->north);
 	printf("SOUTH TEXTURE = %s\n", game->map->south);
 	printf("EAST TEXTURE = %s\n", game->map->east);
@@ -214,7 +215,7 @@ void load_textures(t_game *game)
 			&game->textures[2].width, &game->textures[2].height);
 	game->textures[2].addr = mlx_get_data_addr(game->textures[2].img,
 			&game->textures[2].bits_per_pixel, &game->textures[2].line_length,
-			&game->textures[2].endian);	
+			&game->textures[2].endian);
 	game->textures[3].img = mlx_xpm_file_to_image(game->mlx, game->map->west,
 			&game->textures[3].width, &game->textures[3].height);
 	game->textures[3].addr = mlx_get_data_addr(game->textures[3].img,
@@ -224,7 +225,11 @@ void load_textures(t_game *game)
 
 void draw_pixels(t_ray *ray, int column, t_game *game)
 {
-    ray->wall_x = game->player->pos_x + ray->perp_wall_dist * ray->ray_dir_x;
+	// ray->wall_x'i hesapla (duvarın tam olarak neresine çarptık?)
+    if (ray->side == 0) // Dikey duvar
+		ray->wall_x = game->player->pos_y + ray->perp_wall_dist * ray->ray_dir_y;
+    else // Yatay duvar
+		ray->wall_x = game->player->pos_x + ray->perp_wall_dist * ray->ray_dir_x;
 	determine_texture_number(ray);
 	ray->wall_x -= floor(ray->wall_x); //Texture'ın hangi konumda başlayacağını belirler. (Örneğin 3.5 bir duvara çarptıysak texture 0.5 konumunda başlayacak. Duvarı 1'e 1'lik bir texutre ile kaplarsak 0.5'ten başlayarak 1'e kadar olan kısmı duvara çizeriz. Çünkü diğer türlü texture yanlış çizilir.)
 	ray->tex_x = (int)(ray->wall_x * (double)64); //Texture 64x64 olduğu için başlangıç pixelini 64 ile çarparız. Bu sayede textureda doğru konumundan çizmeye başlarız.
@@ -278,17 +283,7 @@ void raycast(t_ray *ray, t_player *player, t_game *game)
 
 void render(t_game *game)
 {
-    game->img.img = mlx_new_image(game->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
-    if (!game->img.img)
-    {
-        printf("Image could not be created!\n");
-        return;
-    }
-    game->img.addr = mlx_get_data_addr(game->img.img,
-            &game->img.bits_per_pixel, &game->img.line_length, &game->img.endian);
-
     raycast(game->ray, game->player, game);
-
     mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
     // isteğe bağlı: mlx_destroy_image(game->mlx, game->img.img);
 }
@@ -303,43 +298,97 @@ void init_keys(t_game *game)
 	game->player->rotate_right = 0;
 }
 
-int move(t_game *game)
+
+void move(t_game *game)
 {
-	init_keys(game);
-	if (game->player->move_forward)
-		game->player->pos_x += game->player->dir_x * game->player->move_speed;
-	if (game->player->move_backward)
-		game->player->pos_x -= game->player->dir_x * game->player->move_speed;
-	if (game->player->move_left)
-		game->player->pos_y -= game->player->dir_y * game->player->move_speed;
-	if (game->player->move_right)
-		game->player->pos_y += game->player->dir_y * game->player->move_speed;
-	if (game->player->rotate_left)
-	{
-		double old_dir_x = game->player->dir_x;
-		game->player->dir_x = game->player->dir_x * cos(-game->player->rotation_speed) - game->player->dir_y * sin(-game->player->rotation_speed);
-		game->player->dir_y = old_dir_x * sin(-game->player->rotation_speed) + game->player->dir_y * cos(-game->player->rotation_speed);
-		double old_plane_x = game->player->plane_x;
-		game->player->plane_x = game->player->plane_x * cos(-game->player->rotation_speed) - game->player->plane_y * sin(-game->player->rotation_speed);
-		game->player->plane_y = old_plane_x * sin(-game->player->rotation_speed) + game->player->plane_y * cos(-game->player->rotation_speed);
-	}
-	if (game->player->rotate_right)
-	{
-		double old_dir_x = game->player->dir_x;
-		game->player->dir_x = game->player->dir_x * cos(game->player->rotation_speed) - game->player->dir_y * sin(game->player->rotation_speed);
-		game->player->dir_y = old_dir_x * sin(game->player->rotation_speed) + game->player->dir_y * cos(game->player->rotation_speed);
-		double old_plane_x = game->player->plane_x;
-		game->player->plane_x = game->player->plane_x * cos(game->player->rotation_speed) - game->player->plane_y * sin(game->player->rotation_speed);
-		game->player->plane_y = old_plane_x * sin(game->player->rotation_speed) + game->player->plane_y * cos(game->player->rotation_speed);
-	}
-	//duvar kontrolü eklenmeli
-	return 0;
+    double  new_x;
+    double  new_y;
+    char    **map;
+    // Oyuncunun "yarıçapı" gibi davranacak bir tampon bölge.
+    // Duvara bu kadar mesafe kala durmasını sağlar.
+    // Genellikle hareket hızından biraz büyük olması iyi çalışır.
+    double  padding = 0.20; 
+
+    map = game->map->map;
+
+    if (game->player->move_forward)
+    {
+        // 1. Gideceği YENİ X KONUMUNU hesapla
+        new_x = game->player->pos_x + game->player->dir_x * game->player->move_speed;
+        // 2. O konumun "tamponlu" halini (check_x) hesapla
+        double check_x = game->player->pos_x + game->player->dir_x * (game->player->move_speed + padding);
+        // 3. "check_x" bir duvara çarpmıyorsa, asıl "new_x" konumuna git
+        if (map[(int)game->player->pos_y][(int)check_x] != '1')
+            game->player->pos_x = new_x;
+        
+        // 4. Y için aynı mantık
+        new_y = game->player->pos_y + game->player->dir_y * game->player->move_speed;
+        double check_y = game->player->pos_y + game->player->dir_y * (game->player->move_speed + padding);
+        if (map[(int)check_y][(int)game->player->pos_x] != '1')
+            game->player->pos_y = new_y;
+    }
+    if (game->player->move_backward)
+    {
+        new_x = game->player->pos_x - game->player->dir_x * game->player->move_speed;
+        double check_x = game->player->pos_x - game->player->dir_x * (game->player->move_speed + padding);
+        if (map[(int)game->player->pos_y][(int)check_x] != '1')
+            game->player->pos_x = new_x;
+        
+        new_y = game->player->pos_y - game->player->dir_y * game->player->move_speed;
+        double check_y = game->player->pos_y - game->player->dir_y * (game->player->move_speed + padding);
+        if (map[(int)check_y][(int)game->player->pos_x] != '1')
+            game->player->pos_y = new_y;
+    }
+    if (game->player->move_left) // Sağa/Sola (Strafe) plane vektörünü kullanır
+    {
+        new_x = game->player->pos_x - game->player->plane_x * game->player->move_speed;
+        double check_x = game->player->pos_x - game->player->plane_x * (game->player->move_speed + padding);
+        if (map[(int)game->player->pos_y][(int)check_x] != '1')
+            game->player->pos_x = new_x;
+
+        new_y = game->player->pos_y - game->player->plane_y * game->player->move_speed;
+        double check_y = game->player->pos_y - game->player->plane_y * (game->player->move_speed + padding);
+        if (map[(int)check_y][(int)game->player->pos_x] != '1')
+            game->player->pos_y = new_y;
+    }
+    if (game->player->move_right)
+    {
+        new_x = game->player->pos_x + game->player->plane_x * game->player->move_speed;
+        double check_x = game->player->pos_x + game->player->plane_x * (game->player->move_speed + padding);
+        if (map[(int)game->player->pos_y][(int)check_x] != '1')
+            game->player->pos_x = new_x;
+            
+        new_y = game->player->pos_y + game->player->plane_y * game->player->move_speed;
+        double check_y = game->player->pos_y + game->player->plane_y * (game->player->move_speed + padding);
+        if (map[(int)check_y][(int)game->player->pos_x] != '1')
+            game->player->pos_y = new_y;
+    }
+    
+    // Dönme hareketleri (Bunlar doğru, değiştirmeye gerek yok)
+    if (game->player->rotate_left)
+    {
+        double old_dir_x = game->player->dir_x;
+        game->player->dir_x = game->player->dir_x * cos(-game->player->rotation_speed) - game->player->dir_y * sin(-game->player->rotation_speed);
+        game->player->dir_y = old_dir_x * sin(-game->player->rotation_speed) + game->player->dir_y * cos(-game->player->rotation_speed);
+        double old_plane_x = game->player->plane_x;
+        game->player->plane_x = game->player->plane_x * cos(-game->player->rotation_speed) - game->player->plane_y * sin(-game->player->rotation_speed);
+        game->player->plane_y = old_plane_x * sin(-game->player->rotation_speed) + game->player->plane_y * cos(-game->player->rotation_speed);
+    }
+    if (game->player->rotate_right)
+    {
+        double old_dir_x = game->player->dir_x;
+        game->player->dir_x = game->player->dir_x * cos(game->player->rotation_speed) - game->player->dir_y * sin(game->player->rotation_speed);
+        game->player->dir_y = old_dir_x * sin(game->player->rotation_speed) + game->player->dir_y * cos(game->player->rotation_speed);
+        double old_plane_x = game->player->plane_x;
+        game->player->plane_x = game->player->plane_x * cos(game->player->rotation_speed) - game->player->plane_y * sin(game->player->rotation_speed);
+        game->player->plane_y = old_plane_x * sin(game->player->rotation_speed) + game->player->plane_y * cos(game->player->rotation_speed);
+    }
 }
 
 int game_loop (t_game *game)
 {
-	if(move(game))
-		render(game);
+	move(game);
+	render(game); //hareket edemiyorusa return 0 olup ne olacak ?
 	return 0;
 }
 
@@ -370,7 +419,7 @@ int main(int ac, char **av)
 		printf("Wrong argument count!\n");
 		return (1);
 	}
-	//map->map_height = 0;
+	map->map_height = 0;
 	map->player = player;
 	if (check_map_name(av[1]))
 		return (1);
@@ -383,14 +432,28 @@ int main(int ac, char **av)
 	game->map = map;
 	game->player = player;
 	game->ray = ray;
-	if (!ray || !game)
-		return (1);
     assign_direction(player);
-	set_player (player);
+	printf("Player direction: %c\n", player->player_dir);
+	printf("Player direction vector: (dir_x :%f, dir_y: %f)\n", player->dir_x, player->dir_y);
+	set_player(player);
+	printf("Player initial position: (%f, %f)\n", player->pos_x, player->pos_y);
 	set_camera_plane(player);
+	printf("Camera plane vector: (plane_x :%f, plane_y: %f)\n", player->plane_x, player->plane_y);
 	set_player_speed(player);
-	load_textures(game);
+	printf("Player move speed: %f, rotation speed: %f\n", player->move_speed, player->rotation_speed);
+	init_keys(game);
 	set_mlx(game);
+	game->img.img = mlx_new_image(game->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
+    if (!game->img.img)
+    {
+        printf("Error: Image could not be created!\n");
+        // burada bir hata yönetimi yapıp çıkman lazım
+        return (1);
+    }
+    game->img.addr = mlx_get_data_addr(game->img.img,
+            &game->img.bits_per_pixel, &game->img.line_length, &game->img.endian);
+	load_textures(game);
+	render(game);
 	//draw_pixels(game->ray, 0, game);
 	mlx_loop(game->mlx);
 	return (0);

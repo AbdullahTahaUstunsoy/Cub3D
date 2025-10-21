@@ -129,6 +129,10 @@ int check_map_elements(t_map *map)
 	map_size = 0;
 	count = 0;
 	map->map = malloc(sizeof(char *));
+	if (!map->map)
+		return (1);
+	/* start with an empty, NULL-terminated array */
+	map->map[0] = NULL;
 	while ((line = get_next_line(map->fd)))
 	{
 		if (check_tab(line))
@@ -160,6 +164,10 @@ int check_map_elements(t_map *map)
 		free(line);
 		free(trimmed_line);
 	}
+	/* Ensure the map array is NULL-terminated and the height is correct */
+	if (map->map)
+		map->map[map_size] = NULL;
+	map->map_height = map_size;
 	return (0);
 }
 

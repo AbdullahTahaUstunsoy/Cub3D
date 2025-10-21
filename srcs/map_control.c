@@ -37,11 +37,13 @@ int fill_player_struct(int x, int y, int flag, t_map *map)
 {
 	if (!flag)
 	{
+		/* Save the player's direction from the map before overwriting the cell */
+		map->player->player_dir = map->copy_map[y][x];
 		map->player->pos_x = (double)x;
 		map->player->pos_y = (double)y;
+		/* Replace the player marker in both maps with '0' (empty space) */
 		map->map[y][x] = '0';
 		map->copy_map[y][x] = '0';
-		map->player->player_dir = map->copy_map[y][x];
 	}
 	else
 	{
@@ -86,20 +88,30 @@ int	character_check(t_map *map)
 
 	i = 0;
 	flag = 0;
-	while(map->map[i] != NULL)
+	if (!map || !map->map)
 	{
-		j = 0;
-		while(map->map[i][j] != '\0')
+		printf("character_check: map or map->map is NULL\n");
+		return (1);
+	}
+	printf("character_check: map=%p map_height=%d map->map=%p\n", (void *)map, map->map_height, (void *)map->map);
+	while (map->map[i] != NULL)
+	{
+		char *row = map->map[i];
+		printf(" character_check: row %d => %p\n", i, (void *)row);
+		if (!row)
 		{
-			if (map->map[i][j] != '1' && map->map[i][j] != '0'
-				&& map->map[i][j] != ' ')
-					if (map->map[i][j] != 'N' && map->map[i][j] != 'S'
-				&& map->map[i][j] != 'E' && map->map[i][j] != 'W')
-				{
-					flag = 1;
-					c = map->map[i][j];	
-				}
-					
+			printf("character_check: map->map[%d] is NULL (corrupt)\n", i);
+			return (1);
+		}
+		j = 0;
+		while (row[j] != '\0')
+		{
+			char ch = row[j];
+			if (ch != '1' && ch != '0' && ch != ' ' && ch != 'N' && ch != 'S' && ch != 'E' && ch != 'W')
+			{
+				flag = 1;
+				c = ch;
+			}
 			j++;
 		}
 		i++;
