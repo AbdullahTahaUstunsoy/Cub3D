@@ -23,6 +23,8 @@ int flood_check(t_map *map, int x, int y)
 
 void	flood_fill(t_map *map, int x, int y, char target, char fill)
 {
+	if (x < 0 || y < 0 || !map->copy_map[y] || !map->copy_map[y][x])
+		return;
 	if (map->copy_map[y][x] != target)
 		return;
 	map->copy_map[y][x] = fill;
@@ -39,9 +41,9 @@ int fill_player_struct(int x, int y, int flag, t_map *map)
 	{
 		map->player->pos_x = (double)x;
 		map->player->pos_y = (double)y;
+		map->player->player_dir = map->copy_map[y][x];
 		map->map[y][x] = '0';
 		map->copy_map[y][x] = '0';
-		map->player->player_dir = map->copy_map[y][x];
 	}
 	else
 	{
@@ -74,6 +76,11 @@ int	find_player_position(t_map *map)
 			}
 		}
 	}
+	if (map->player->pos_x == -1.0 || map->player->pos_y == -1.0)
+	{
+		printf("There isn't any player!!!");
+		return (1);
+	}
 	return (0);
 }
 
@@ -97,7 +104,6 @@ int	character_check(t_map *map)
 				&& map->map[i][j] != 'E' && map->map[i][j] != 'W'
 				&& map->map[i][j] != '\n')
 				{
-					printf("%s\n", map->map[i]);
 					flag = 1;
 					c = map->map[i][j];	
 				}
@@ -140,6 +146,11 @@ int map_control(t_map *map)
 
 	i = -1;
 	length = find_longest_line(map);
+	if (length < 3 || map->map_height < 3)
+	{
+		printf("Map is too small!!!\n");
+		return (1);
+	}
 	while (map->copy_map[++i] != NULL)
 	{
 		tmp = ft_strlen(map->copy_map[i]);
