@@ -134,7 +134,6 @@ int close_the_window(void *param);
 
 
 
-int fill_map_struct(char *map_file, t_map *map);
 void	free_array(char **str);
 int	map_fill(t_map *map, char *line, int map_size);
 int	map_control(t_map *map);
@@ -147,6 +146,11 @@ void	assign_direction(t_player *player);
 void	set_player(t_player *player);
 void	set_camera_plane(t_player *player);
 void	set_player_speed(t_player *player);
-void	free_all(t_map *map);
+void	free_all(t_game *game);
+int map_operations(t_game *game, char **av);
+void	map_init(t_game *game);
+int check_map_name(char *str);
+int fill_map_struct(char *map_file, t_map *map);
+void *free_game(t_game *game);
 
 #endif

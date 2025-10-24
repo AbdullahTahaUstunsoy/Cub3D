@@ -355,3 +355,19 @@ int fill_map_struct(char *map_file, t_map *map)
 		return (1);
 	return (0);
 }
+
+int map_operations(t_game *game, char **av)
+{
+	map_init(game);
+	if (check_map_name(av[1]))
+	{
+		free_all(game);
+		return (1);
+	}
+	if (fill_map_struct(av[1], game->map))
+	{
+		free_all(game);
+		return (1);
+	}
+	return (0);
+}

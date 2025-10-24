@@ -84,6 +84,7 @@ int close_the_window(void *param)
     // free(game);
 
     // En son programdan çık
+    free_all(game);
     exit(0);
     return (0);
 }

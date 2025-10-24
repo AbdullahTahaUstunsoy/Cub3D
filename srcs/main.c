@@ -1,5 +1,6 @@
 #include "../includes/cube3D.h"
 
+//color, r g b kullandım mı ? r << 16, g << 8 , b yapısını şuan göremedim gerekli mi ?
 int check_map_name(char *str)
 {
 	int	i;
@@ -58,7 +59,7 @@ void set_camera_plane (t_player *player)
 		player->plane_y = 0.66;
 	}
 }
-void assign_direction(t_player *player)
+void set_direction(t_player *player)
 {
     if (player->player_dir == 'N')
     {
@@ -404,87 +405,120 @@ void set_mlx(t_game *game)
 	mlx_loop_hook(game->mlx, game_loop, game);
 }
 
-void	map_init(t_map *map, t_player *player)
+void	map_init(t_game *game)
 {
-	map->fd = -2;
-	map->start_x = -1;
-	map->start_y = -1;
-	map->e_fd = -2;
-	map->s_fd = -2;
-	map->n_fd = -2;
-	map->w_fd = -2;
-	map->map_height = 0;
-	map->player = player;
-	map->ceiling = -1;
-	map->floor = -1;
-	map->north = NULL;
-	map->south = NULL;
-	map->east = NULL;
-	map->west = NULL;
+	game->map->fd = -2;
+	game->map->start_x = -1;
+	game->map->start_y = -1;
+	game->map->e_fd = -2;
+	game->map->s_fd = -2;
+	game->map->n_fd = -2;
+	game->map->w_fd = -2;
+	game->map->map_height = 0;
+	game->map->ceiling = -1;
+	game->map->floor = -1;
+	game->map->north = NULL;
+	game->map->south = NULL;
+	game->map->east = NULL;
+	game->map->west = NULL;
+	game->map->player = game->player; // bu saçma mı oldu
 }
 
-int main(int ac, char **av)
+
+int init_main_img(t_game *game)
 {
-	t_map	*map;
-	t_player	*player;
-	t_ray *ray;
+	game->img.img = mlx_new_image(game->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (!game->img.img)
+	{
+		printf("Error: Image could not be created!\n");
+		//destroy free durumunu ayarla
+		return (1);
+	}
+	game->img.addr = mlx_get_data_addr(game->img.img,
+			&game->img.bits_per_pixel, &game->img.line_length,
+			&game->img.endian);
+	if (!game->img.addr)
+	{
+		printf("Error : Image address could not be taken!\n");
+		//destroy free durumunu ayarla
+		return (1);
+	}
+	return (0);
+}
+
+
+void *free_game(t_game *game)
+{
+	if (game->player)
+		free(game->player);
+	if (game->map)
+		free(game->map);
+	if (game->ray)
+		free(game->ray);
+	free(game);
+	return (NULL);
+}
+
+t_game *init_structs(void)
+{
+	// bu structları kendi içinde başlatmalı mıyım ?
 	t_game *game;
 	
-	player = ft_calloc(1,sizeof(t_player));
-	map = ft_calloc(1,sizeof(t_map));
-	if(!player || !map)
+	game = ft_calloc(1, sizeof(t_game));
+	if(!game)
+		return (NULL);
+	game->player = ft_calloc(1,sizeof(t_player));
+	if(game->player == NULL)
+		return(free_game(game));
+	game->map = ft_calloc(1,sizeof(t_map));
+	if(game->map == NULL)
+		return(free_game(game));
+	game->ray = ft_calloc(1,sizeof(t_ray));
+	if(game->ray == NULL)
+		return(free_game(game));
+	return (game);
+}
+int set_game_components(t_game *game)
+{
+	set_mlx(game);
+	if(init_main_img(game))
 		return (1);
-	if (ac != 2)
+	init_keys(game);
+	set_direction(game->player);
+	set_player(game->player);
+	set_camera_plane(game->player);
+	set_player_speed(game->player);
+	return (0);
+}
+int check_initial_conditions (t_game *game, int argc)
+{
+	if (game == NULL)
+	{
+		printf("An error occured while initializing structs!\n");
+		return (1);
+	}
+	if (argc != 2)
 	{
 		printf("Wrong argument count!\n");
 		return (1);
 	}
-	map_init(map, player);
-	player->pos_x = -1.0;
-	player->pos_y = -1.0;
+	return (0);
+}
 
-	if (check_map_name(av[1]))
-	{
-		free_all(map);
+
+int main(int ac, char **av)
+{
+	t_game *game;
+
+	game = init_structs();
+	if (check_initial_conditions(game,ac))
 		return (1);
-	}
-	if (fill_map_struct(av[1], map))
-	{
-		free_all(map);
+	if (map_operations(game,av))
 		return (1);
-	}
-	ray = ft_calloc(1, sizeof(t_ray));
-	game = ft_calloc(1, sizeof(t_game));
-	if(!ray || !game)
+	if (set_game_components(game))
 		return (1);
-	game->map = map;
-	// printf("PLAYER POSITION == %c", player->player_dir);
-	game->player = player;
-	game->ray = ray;
-    assign_direction(player);
-	// printf("Player direction: %c\n", player->player_dir);
-	// printf("Player direction vector: (dir_x :%f, dir_y: %f)\n", player->dir_x, player->dir_y);
-	set_player(player);
-	// printf("Player initial position: (%f, %f)\n", player->pos_x, player->pos_y);
-	set_camera_plane(player);
-	// printf("Camera plane vector: (plane_x :%f, plane_y: %f)\n", player->plane_x, player->plane_y);
-	set_player_speed(player);
-	// printf("Player move speed: %f, rotation speed: %f\n", player->move_speed, player->rotation_speed);
-	init_keys(game);
-	set_mlx(game);
-	game->img.img = mlx_new_image(game->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
-    if (!game->img.img)
-    {
-        printf("Error: Image could not be created!\n");
-        // burada bir hata yönetimi yapıp çıkman lazım
-        return (1);
-    }
-    game->img.addr = mlx_get_data_addr(game->img.img,
-            &game->img.bits_per_pixel, &game->img.line_length, &game->img.endian);
 	load_textures(game);
 	render(game);
-	//draw_pixels(game->ray, 0, game);
 	mlx_loop(game->mlx);
-	free_all(map);
 	return (0);
 }
