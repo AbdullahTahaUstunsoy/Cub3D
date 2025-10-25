@@ -10,12 +10,10 @@ void  check_and_move(t_game *game, double dir_x, double dir_y)
     map = game->map->map;
     speed = game->player->move_speed;
     
-    // X ekseninde hareket ve çarpışma kontrolü
     new_x = game->player->pos_x + dir_x * speed;
     if (map[(int)game->player->pos_y][(int)(game->player->pos_x + dir_x * (speed + PADDING))] != '1')
         game->player->pos_x = new_x;
 
-    // Y ekseninde hareket ve çarpışma kontrolü
     new_y = game->player->pos_y + dir_y * speed;
     if (map[(int)(game->player->pos_y + dir_y * (speed + PADDING))][(int)game->player->pos_x] != '1')
         game->player->pos_y = new_y;
@@ -23,16 +21,12 @@ void  check_and_move(t_game *game, double dir_x, double dir_y)
 
 void    handle_translation(t_game *game)
 {
-    // İleri (W) - Yön vektörünü kullan
     if (game->player->move_forward)
         check_and_move(game, game->player->dir_x, game->player->dir_y);
-    // Geri (S) - Yön vektörünün tersini kullan
     if (game->player->move_backward)
         check_and_move(game, -game->player->dir_x, -game->player->dir_y);
-    // Sol (A) - Kamera düzleminin (plane) tersini kullan
     if (game->player->move_left)
         check_and_move(game, -game->player->plane_x, -game->player->plane_y);
-    // Sağ (D) - Kamera düzlemini (plane) kullan
     if (game->player->move_right)
         check_and_move(game, game->player->plane_x, game->player->plane_y);
 }
@@ -65,8 +59,6 @@ void move(t_game *game)
 	handle_translation(game);
 	handle_rotation(game);
 }
-
-
 
 
 /*void move(t_game *game)

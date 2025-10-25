@@ -49,8 +49,10 @@ int main(int ac, char **av)
 {
 	t_game *game;
 
+	if (ac != 2)
+		return (1);
 	game = init_structs();
-	if (check_initial_conditions(game,ac))
+	if (game == NULL)
 		return (1);
 	if (map_operations(game,av))
 		return (1);
