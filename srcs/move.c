@@ -4,22 +4,20 @@ void  check_and_move(t_game *game, double dir_x, double dir_y)
 {
     char    **map;
     double  speed;
-    double  padding;
     double  new_x;
     double  new_y;
 
     map = game->map->map;
     speed = game->player->move_speed;
-    padding = 0.20; // Tampon bölge
     
     // X ekseninde hareket ve çarpışma kontrolü
     new_x = game->player->pos_x + dir_x * speed;
-    if (map[(int)game->player->pos_y][(int)(game->player->pos_x + dir_x * (speed + padding))] != '1')
+    if (map[(int)game->player->pos_y][(int)(game->player->pos_x + dir_x * (speed + PADDING))] != '1')
         game->player->pos_x = new_x;
 
     // Y ekseninde hareket ve çarpışma kontrolü
     new_y = game->player->pos_y + dir_y * speed;
-    if (map[(int)(game->player->pos_y + dir_y * (speed + padding))][(int)game->player->pos_x] != '1')
+    if (map[(int)(game->player->pos_y + dir_y * (speed + PADDING))][(int)game->player->pos_x] != '1')
         game->player->pos_y = new_y;
 }
 

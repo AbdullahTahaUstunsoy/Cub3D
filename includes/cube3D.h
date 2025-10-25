@@ -60,6 +60,7 @@ typedef struct s_map
 	int			ceiling;
 	int			floor;
 	int			map_height;
+	int			map_size;
 	char		**map;
 	char		**copy_map;
 	t_player	*player;
@@ -135,24 +136,20 @@ int close_the_window(void *param);
 
 
 
-void	free_array(char **str);
 int	map_fill(t_map *map, char *line, int map_size);
 int	map_control(t_map *map);
 char	**copy_map(t_map *map);
 int	find_player_position(t_map *map);
-void	flood_fill(t_map *map, int x, int y, char target, char fill);
+void	flood_fill(t_map *map, int x, int y, char target);
 int		flood_check(t_map *map, int x, int y);
 
-void	assign_direction(t_player *player);
 void	set_player(t_player *player);
 void	set_camera_plane(t_player *player);
 void	set_player_speed(t_player *player);
-void	free_all(t_game *game);
 int map_operations(t_game *game, char **av);
 void	map_init(t_game *game);
 int check_map_name(char *str);
 int fill_map_struct(char *map_file, t_map *map);
-void *free_game(t_game *game);
 
 int set_game_components(t_game *game);
 int init_main_img(t_game *game);
@@ -166,7 +163,6 @@ void set_camera_plane (t_player *player);
 void set_player_speed (t_player *player);
 
 t_game *init_structs(void);
-int check_initial_conditions (t_game *game, int argc);
 
 
 void raycast(t_ray *ray, t_player *player, t_game *game);
@@ -184,5 +180,32 @@ void calculate_wall_distance(t_ray *ray);
 void height_of_line_to_draw(t_ray *ray);
 void load_textures(t_game *game);
 void move(t_game *game);
+
+void free_mlx(t_game *game);
+void *free_game(t_game *game);
+void	free_all(t_game *game);
+void	free_array(char **str);
+void    free_map_contents(t_map *map);
+int		map_operations(t_game *game, char **av);
+void	map_init(t_game *game);
+int		check_map_name(char *str);
+int		fill_map_struct(char *map_file, t_map *map);
+void	*free_game(t_game *game);
+int		check_invalid_map_line(char *line);
+int		ft_isvalid(char *str);
+int		check_coloring(char *line);
+int		check_identifiers(t_map *map, char *identifier);
+int		check_tab(char *str);
+int		check_files(t_map *map);
+int		check_files_names(t_map *map);
+int		check_map_elements(t_map *map);
+char	*adjust_line(t_map *map, char *line, int count);
+int		map_elements(t_map *map, char *trimmed_line, char *line, int count);
+int		flood_check(t_map *map, int x, int y);
+int		fill_player_struct(int x, int y, int flag, t_map *map);
+int		find_player_position(t_map *map);
+int		find_longest_line(t_map *map);
+
+
 
 #endif

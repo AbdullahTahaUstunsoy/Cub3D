@@ -40,6 +40,8 @@ void	map_init(t_game *game)
 	game->map->east = NULL;
 	game->map->west = NULL;
 	game->map->player = game->player; // bu saçma mı oldu
+	game->map->player->pos_x = -1.0;
+	game->map->player->pos_y = -1.0;
 }
 
 
@@ -47,8 +49,10 @@ int main(int ac, char **av)
 {
 	t_game *game;
 
+	if (ac != 2)
+		return (1);
 	game = init_structs();
-	if (check_initial_conditions(game,ac))
+	if (game == NULL)
 		return (1);
 	if (map_operations(game,av))
 		return (1);

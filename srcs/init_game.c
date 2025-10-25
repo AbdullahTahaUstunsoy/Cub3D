@@ -64,18 +64,4 @@ t_game *init_structs(void)
 	return (game);
 }
 
-int check_initial_conditions (t_game *game, int argc)
-{
-	if (game == NULL)
-	{
-		printf("An error occured while initializing structs!\n");
-		return (1);
-	}
-	if (argc != 2)
-	{
-		printf("Wrong argument count!\n");
-		return (1);
-	}
-	return (0);
-}
 

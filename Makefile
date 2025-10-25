@@ -3,7 +3,7 @@ NAME = cub3D
 
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g
 
 # Directories (project specific)
 SRC_DIR = srcs
