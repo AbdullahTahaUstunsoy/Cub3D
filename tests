@@ -4,4 +4,7 @@
 // printf("Player initial position: (%f, %f)\n", player->pos_x, player->pos_y);
 // printf("Camera plane vector: (plane_x :%f, plane_y: %f)\n", player->plane_x, player->plane_y);
 // printf("Player move speed: %f, rotation speed: %f\n", player->move_speed, player->rotation_speed);
-
+// printf("NORTH TEXTURE = %s\n", game->map->north);
+// printf("SOUTH TEXTURE = %s\n", game->map->south);
+// printf("EAST TEXTURE = %s\n", game->map->east);
+// printf("WEST TEXTURE = %s\n", game->map->west);

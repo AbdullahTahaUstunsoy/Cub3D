@@ -88,3 +88,14 @@ int close_the_window(void *param)
     exit(0);
     return (0);
 }
+
+
+void init_keys(t_game *game)
+{
+	game->player->move_forward = 0;
+	game->player->move_backward = 0;
+	game->player->move_left = 0;
+	game->player->move_right = 0;
+	game->player->rotate_left = 0;
+	game->player->rotate_right = 0;
+}

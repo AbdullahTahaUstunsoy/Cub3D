@@ -12,6 +12,7 @@
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 # define KEY_ESC 65307
+#define PADDING 0.20
 
 #include <math.h>
 #include <stdio.h>
@@ -95,7 +96,7 @@ typedef struct  s_ray
 	double wall_end;
 }				t_ray;
 
-typedef struct s_color
+typedef struct s_color //henüz kullnmadım
 {
 	int	r;
 	int	g;
@@ -152,5 +153,36 @@ void	map_init(t_game *game);
 int check_map_name(char *str);
 int fill_map_struct(char *map_file, t_map *map);
 void *free_game(t_game *game);
+
+int set_game_components(t_game *game);
+int init_main_img(t_game *game);
+void set_mlx(t_game *game);
+
+void init_keys(t_game *game);
+
+void set_direction(t_player *player);
+void set_player (t_player *player);
+void set_camera_plane (t_player *player);
+void set_player_speed (t_player *player);
+
+t_game *init_structs(void);
+int check_initial_conditions (t_game *game, int argc);
+
+
+void raycast(t_ray *ray, t_player *player, t_game *game);
+void render(t_game *game);
+int game_loop (t_game *game);
+
+void draw_pixels(t_ray *ray, int column, t_game *game);
+int	get_color(t_texture *img, int x, int y);
+void determine_texture_number(t_ray *ray);
+
+void init_rays (t_ray *ray, t_player *player, int column);
+void step_and_sideDist(t_ray *ray, t_player *player);
+void perform_dda(t_ray *ray, t_player *player, t_map *map);
+void calculate_wall_distance(t_ray *ray);
+void height_of_line_to_draw(t_ray *ray);
+void load_textures(t_game *game);
+void move(t_game *game);
 
 #endif
