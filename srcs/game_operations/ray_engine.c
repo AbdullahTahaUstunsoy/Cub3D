@@ -6,7 +6,7 @@
 /*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 15:49:22 by austunso          #+#    #+#             */
-/*   Updated: 2025/10/26 15:50:56 by austunso         ###   ########.fr       */
+/*   Updated: 2025/10/26 17:56:17 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void init_rays (t_ray *ray, t_player *player, int column)
 {
-
 	ray->camera_x = 2 * column / (double)SCREEN_WIDTH - 1;
 	ray->ray_dir_x = player->dir_x + player->plane_x * ray->camera_x;
 	ray->ray_dir_y = player->dir_y + player->plane_y * ray->camera_x;

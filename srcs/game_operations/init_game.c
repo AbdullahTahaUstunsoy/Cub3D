@@ -6,20 +6,33 @@
 /*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 15:49:08 by austunso          #+#    #+#             */
-/*   Updated: 2025/10/26 16:17:33 by austunso         ###   ########.fr       */
+/*   Updated: 2025/10/26 16:42:10 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3D.h"
 
-void set_mlx(t_game *game)
+int set_mlx(t_game *game)
 {
 	game->mlx = mlx_init();
+	if (!game->mlx)
+	{
+    	printf("Error: Failed to initialize MiniLibX (mlx_init)\n");
+    	free_all(game);
+		return (1);
+	}
 	game->win = mlx_new_window(game->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3D");
+	if (!game->win)
+	{
+    	printf("Error: Failed to create window (mlx_new_window)\n");
+		free_all(game);
+		return (1);
+	}
 	mlx_hook(game->win, 2, 1L<<0, press_the_key, game);
 	mlx_hook(game->win, 3, 1L<<1, release_the_key, game);
 	mlx_hook(game->win, 17, 0, close_the_window, game);
 	mlx_loop_hook(game->mlx, game_loop, game);
+	return (0);
 }
 
 int init_main_img(t_game *game)
@@ -28,7 +41,7 @@ int init_main_img(t_game *game)
 	if (!game->img.img)
 	{
 		printf("Error: Image could not be created!\n");
-		//destroy free durumunu ayarla
+		free_all(game);
 		return (1);
 	}
 	game->img.addr = mlx_get_data_addr(game->img.img,
@@ -37,7 +50,7 @@ int init_main_img(t_game *game)
 	if (!game->img.addr)
 	{
 		printf("Error : Image address could not be taken!\n");
-		//destroy free durumunu ayarla
+		free_all(game);
 		return (1);
 	}
 	return (0);
@@ -45,7 +58,8 @@ int init_main_img(t_game *game)
 
 int set_game_components(t_game *game)
 {
-	set_mlx(game);
+	if(set_mlx(game))
+		return (1);
 	if(init_main_img(game))
 		return (1);
 	init_keys(game);

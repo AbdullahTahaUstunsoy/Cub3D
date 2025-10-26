@@ -1,5 +1,5 @@
-#ifndef CUBE3D_H
-#define CUBE3D_H
+#ifndef CUB3D_H
+#define CUB3D_H
 
 
 #define SCREEN_HEIGHT 1080
@@ -149,7 +149,7 @@ int fill_map_struct(char *map_file, t_map *map);
 
 int set_game_components(t_game *game);
 int init_main_img(t_game *game);
-void set_mlx(t_game *game);
+int set_mlx(t_game *game);
 
 void init_keys(t_game *game);
 
@@ -174,7 +174,7 @@ void step_and_sideDist(t_ray *ray, t_player *player);
 void perform_dda(t_ray *ray, t_player *player, t_map *map);
 void calculate_wall_distance(t_ray *ray);
 void height_of_line_to_draw(t_ray *ray);
-void load_textures(t_game *game);
+int load_textures(t_game *game);
 void move(t_game *game);
 
 void free_mlx(t_game *game);

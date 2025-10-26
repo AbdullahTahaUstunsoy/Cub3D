@@ -6,7 +6,7 @@
 /*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 15:49:03 by austunso          #+#    #+#             */
-/*   Updated: 2025/10/26 15:49:05 by austunso         ###   ########.fr       */
+/*   Updated: 2025/10/26 17:54:10 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ void raycast(t_ray *ray, t_player *player, t_game *game)
 		perform_dda(ray, player, game->map);
 		calculate_wall_distance(ray);
 		height_of_line_to_draw(ray);
-		draw_pixels(ray, column, game); //textured kısmı başladı.
-		//birkaç fonksiyon daha eklememiz gerekebilir.
+		draw_pixels(ray, column, game);
 		column++;
 	}
 }

@@ -25,7 +25,8 @@ int main(int ac, char **av)
 		return (1);
 	if (set_game_components(game))
 		return (1);
-	load_textures(game);
+	if (load_textures(game))
+		return (1);
 	render(game);
 	mlx_loop(game->mlx);
 	return (0);
