@@ -6,11 +6,11 @@
 /*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 16:58:22 by falakus           #+#    #+#             */
-/*   Updated: 2025/10/25 20:53:36 by austunso         ###   ########.fr       */
+/*   Updated: 2025/10/26 15:43:05 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3D.h"
+#include "../../includes/cub3D.h"
 
 int	flood_check(t_map *map, int x, int y)
 {

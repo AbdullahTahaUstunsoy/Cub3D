@@ -3,14 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
+/*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 17:00:04 by falakus           #+#    #+#             */
-/*   Updated: 2025/10/25 19:42:29 by falakus          ###   ########.fr       */
+/*   Updated: 2025/10/26 15:43:08 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3D.h"
+#include "../../includes/cub3D.h"
+
+int check_map_name(char *str)
+{
+	int	i;
+	int	flag;
+
+	flag = 0;
+	i = ft_strlen(str);
+	if (str[i - 1] != 'b')
+		flag = 1;
+	else if (str[i - 2] != 'u')
+		flag = 1;
+	else if (str[i - 3] != 'c')
+		flag = 1;
+	else if (str[i - 4] != '.')
+		flag = 1;
+	else if (str[i - 5] == '/')
+		flag = 1;
+	if (flag == 1)
+		printf("Wrong file name!\n");
+	return (flag);
+}
+
+void	map_init(t_game *game)
+{
+	game->map->fd = -2;
+	game->map->start_x = -1;
+	game->map->start_y = -1;
+	game->map->e_fd = -2;
+	game->map->s_fd = -2;
+	game->map->n_fd = -2;
+	game->map->w_fd = -2;
+	game->map->map_height = 0;
+	game->map->ceiling = -1;
+	game->map->floor = -1;
+	game->map->north = NULL;
+	game->map->south = NULL;
+	game->map->east = NULL;
+	game->map->west = NULL;
+	game->map->player = game->player;
+	game->map->player->pos_x = -1.0;
+	game->map->player->pos_y = -1.0;
+}
 
 int	double_map_check(t_map *map)
 {

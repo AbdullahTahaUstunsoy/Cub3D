@@ -30,13 +30,13 @@
 
 typedef struct s_player
 {
-	char player_dir; // oyuncunun yönünü tutacak -> N,S,E,W
-	double pos_x; // oyuncunun x koordinatı //bunlar henüz bulunmadı sanırım 
-	double pos_y; // oyuncunun y koordinatı //bunlar henüz bulunmadı sanırım 
-	double plane_x; // kamera düzlemi x bileşeni
-	double plane_y; // kamera düzlemi y bileşeni
-	double dir_x; // yön vektörünün x bileşeni
-	double dir_y; // yön vektörünün y bileşeni
+	char player_dir;
+	double pos_x;
+	double pos_y;
+	double plane_x;
+	double plane_y;
+	double dir_x;
+	double dir_y;
 	double move_speed;
 	double rotation_speed;
 	int		hit;
@@ -72,8 +72,6 @@ typedef struct s_map
 
 }				t_map;
 
-
-
 typedef struct  s_ray
 {
 	double camera_x;
@@ -101,13 +99,6 @@ typedef struct  s_ray
 	double wall_start;
 	double wall_end;
 }				t_ray;
-
-typedef struct s_color //henüz kullnmadım
-{
-	int	r;
-	int	g;
-	int	b;
-}				t_color;
 
 typedef struct s_texture
 {
@@ -210,7 +201,5 @@ int		flood_check(t_map *map, int x, int y);
 int		fill_player_struct(int x, int y, int flag, t_map *map);
 int		find_player_position(t_map *map);
 int		find_longest_line(t_map *map);
-
-
 
 #endif

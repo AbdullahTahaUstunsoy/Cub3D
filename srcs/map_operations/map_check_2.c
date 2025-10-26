@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   map_check_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
+/*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 16:41:51 by falakus           #+#    #+#             */
-/*   Updated: 2025/10/25 18:12:40 by falakus          ###   ########.fr       */
+/*   Updated: 2025/10/26 15:42:58 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3D.h"
+#include "../../includes/cub3D.h"
 
 int	check_files(t_map *map)
 {
