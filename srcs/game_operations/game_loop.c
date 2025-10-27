@@ -38,7 +38,7 @@ void render(t_game *game)
 int game_loop (t_game *game)
 {
 	move(game);
-	render(game); //hareket edemiyorusa return 0 olup ne olacak ?
+	render(game);
 	return 0;
 }
 
