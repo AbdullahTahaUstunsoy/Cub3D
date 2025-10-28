@@ -28,30 +28,6 @@
 #include "../minilibx-linux/mlx.h"
 #include "../get_next_line/get_next_line.h"
 
-typedef struct s_map
-{
-	int			fd;
-	int			start_x;
-	int			start_y;
-	int			e_fd;
-	int			n_fd;
-	int			s_fd;
-	int			w_fd;
-	int			flag;
-	char		*north;
-	char		*east;
-	char		*south;
-	char		*west;
-	int			ceiling;
-	int			floor;
-	int			map_height;
-	int			map_size;
-	char		**map;
-	char		**copy_map;
-	t_player	*player;
-	
-}				t_map;
-
 typedef struct s_player_pos
 {
 	char player_dir;
@@ -79,7 +55,36 @@ typedef struct s_player_speed
 	double	rotation_speed;
 }		t_player_speed;
 
+typedef struct s_player
+{
+	t_player_pos		player_pos;
+	t_player_input		player_input;
+	t_player_speed		player_speed;
+}           t_player;
 
+typedef struct s_map
+{
+	int			fd;
+	int			start_x;
+	int			start_y;
+	int			e_fd;
+	int			n_fd;
+	int			s_fd;
+	int			w_fd;
+	int			flag;
+	char		*north;
+	char		*east;
+	char		*south;
+	char		*west;
+	int			ceiling;
+	int			floor;
+	int			map_height;
+	int			map_size;
+	char		**map;
+	char		**copy_map;
+	t_player	*player;
+
+}				t_map;
 
 typedef struct s_ray_calc
 {
@@ -114,6 +119,11 @@ typedef struct s_draw_params
     double  wall_end;
 }	t_draw_params;
 
+typedef struct  s_ray
+{
+	t_ray_calc      ray_calc;
+    t_draw_params   ray_draw;
+}				t_ray;
 
 typedef struct s_texture
 {
@@ -132,27 +142,14 @@ typedef struct s_mlx_content
 	void	*win;
 }				t_mlx_content;
 
-typedef struct  s_ray
-{
-	t_ray_calc      ray_calc;
-	t_draw_params   ray_draw;
-}				t_ray;
-
-typedef struct s_player
-{
-	t_player_pos		player_pos;
-	t_player_input		player_input;
-	t_player_speed		player_speed;
-}           t_player;
-
 typedef struct s_game
 {
-	t_player	*player;
 	t_ray 		*ray;
-	t_map		*map;
 	t_mlx_content mlx_content;
 	t_texture	textures[4];
 	t_texture	img;
+	t_map		*map;
+	t_player	*player;
 }				t_game;
 
 int press_the_key(int keycode, void *param);
