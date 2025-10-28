@@ -29,22 +29,25 @@ void	free_array(char **str)
 
 void free_mlx(t_game *game)
 {
-	if (game->mlx)
+	t_mlx_content *mlx_content;
+
+	mlx_content = game->mlx_content;
+	if (mlx_content->mlx)
 	{
 		if (game->img.img)
-			mlx_destroy_image(game->mlx, game->img.img);
+			mlx_destroy_image(mlx_content->mlx, game->img.img);
 		if (game->textures[0].img)
-			mlx_destroy_image(game->mlx, game->textures[0].img);
+			mlx_destroy_image(mlx_content->mlx, game->textures[0].img);
 		if (game->textures[1].img)
-			mlx_destroy_image(game->mlx, game->textures[1].img);
+			mlx_destroy_image(mlx_content->mlx, game->textures[1].img);
 		if (game->textures[2].img)
-			mlx_destroy_image(game->mlx, game->textures[2].img);
+			mlx_destroy_image(mlx_content->mlx, game->textures[2].img);
 		if (game->textures[3].img)
-			mlx_destroy_image(game->mlx, game->textures[3].img);
-		if (game->win)
-			mlx_destroy_window(game->mlx, game->win);
-		mlx_destroy_display(game->mlx);
-		free(game->mlx);
+			mlx_destroy_image(mlx_content->mlx, game->textures[3].img);
+		if (mlx_content->win)
+			mlx_destroy_window(mlx_content->mlx, mlx_content->win);
+		mlx_destroy_display(mlx_content->mlx);
+		free(mlx_content->mlx);
 	}
 }
 
@@ -76,6 +79,10 @@ void    free_map_contents(t_map *map)
         free_array(map->copy_map); // free_array fonksiyonun olduğunu varsayıyorum
 }
 
+//free_player operations
+//free_ray operations
+
+
 void *free_game(t_game *game)
 {
 	if (game->player)
@@ -84,6 +91,8 @@ void *free_game(t_game *game)
 		free(game->map);
 	if (game->ray)
 		free(game->ray);
+	if(game->mlx_content)
+		free(game->mlx_content);
 	free(game);
 	return (NULL);
 }

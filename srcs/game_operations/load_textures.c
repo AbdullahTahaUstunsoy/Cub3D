@@ -14,7 +14,7 @@
 
 static int load_textures_north(t_game * game)
 {
-	game->textures[NORTH].img = mlx_xpm_file_to_image(game->mlx, game->map->north,
+	game->textures[NORTH].img = mlx_xpm_file_to_image(game->mlx_content->mlx, game->map->north,
 			&game->textures[NORTH].width, &game->textures[NORTH].height);
 	if (!game->textures[NORTH].img)
 	{
@@ -36,7 +36,7 @@ static int load_textures_north(t_game * game)
 
 static int load_textures_south(t_game *game)
 {
-	game->textures[SOUTH].img = mlx_xpm_file_to_image(game->mlx, game->map->south,
+	game->textures[SOUTH].img = mlx_xpm_file_to_image(game->mlx_content->mlx, game->map->south,
 			&game->textures[SOUTH].width, &game->textures[SOUTH].height);
 	if (!game->textures[SOUTH].img)
 	{
@@ -59,7 +59,7 @@ static int load_textures_south(t_game *game)
 
 static int load_textures_west(t_game *game)
 {
-	game->textures[WEST].img = mlx_xpm_file_to_image(game->mlx, game->map->west,
+	game->textures[WEST].img = mlx_xpm_file_to_image(game->mlx_content->mlx, game->map->west,
 			&game->textures[WEST].width, &game->textures[WEST].height);
 	if(!game->textures[WEST].img)
 	{
@@ -81,7 +81,7 @@ static int load_textures_west(t_game *game)
 
 static int load_textures_east(t_game *game)
 {
-	game->textures[EAST].img = mlx_xpm_file_to_image(game->mlx, game->map->east,
+	game->textures[EAST].img = mlx_xpm_file_to_image(game->mlx_content->mlx, game->map->east,
 			&game->textures[EAST].width, &game->textures[EAST].height);
 	if(!game->textures[EAST].img)
 	{

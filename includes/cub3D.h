@@ -39,7 +39,6 @@ typedef struct s_player
 	double dir_y;
 	double move_speed;
 	double rotation_speed;
-	int		hit;
 	int		move_forward;
 	int		move_backward;
 	int		move_left;
@@ -111,17 +110,18 @@ typedef struct s_texture
 	int		endian;
 }				t_texture;
 
+typedef struct s_mlx_content
+{
+	void	*mlx;
+	void	*win;
+}				t_mlx_content;
+
 typedef struct s_game
 {
 	t_ray 		*ray;
-	void		*mlx;
-	void		*win;
+	t_mlx_content *mlx_content;
 	t_texture	textures[4];
 	t_texture	img;
-	char		*addr;
-	int			bits_per_pixel;
-	int			line_length;
-	int			endian;
 	t_map		*map;
 	t_player	*player;
 }				t_game;
@@ -171,7 +171,7 @@ void determine_texture_number(t_ray *ray);
 
 void init_rays (t_ray *ray, t_player *player, int column);
 void step_and_sideDist(t_ray *ray, t_player *player);
-void perform_dda(t_ray *ray, t_player *player, t_map *map);
+void perform_dda(t_ray *ray, t_map *map);
 void calculate_wall_distance(t_ray *ray);
 void height_of_line_to_draw(t_ray *ray);
 int load_textures(t_game *game);

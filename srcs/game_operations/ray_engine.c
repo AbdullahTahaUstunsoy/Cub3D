@@ -19,7 +19,7 @@ void init_rays (t_ray *ray, t_player *player, int column)
 	ray->ray_dir_y = player->dir_y + player->plane_y * ray->camera_x;
 	ray->map_x = (int)player->pos_x;
 	ray->map_y = (int)player->pos_y;
-	player->hit = 0;
+	ray->hit = 0;
 	if (ray->ray_dir_x == 0)
 		ray->delta_dist_x = 1e30;
 	else
@@ -55,9 +55,9 @@ void step_and_sideDist(t_ray *ray, t_player *player)
 	}
 }
 
-void perform_dda(t_ray *ray, t_player *player, t_map *map)
+void perform_dda(t_ray *ray, t_map *map)
 {
-	while (player->hit == 0)
+	while (ray->hit == 0)
 	{
 		if (ray->side_dist_x < ray->side_dist_y)
 		{
@@ -72,7 +72,7 @@ void perform_dda(t_ray *ray, t_player *player, t_map *map)
 			ray->side = 1;
 		}
 		if (map->map[ray->map_y][ray->map_x] == '1')
-			player->hit = 1;
+			ray->hit = 1;
 	}
 }
 
