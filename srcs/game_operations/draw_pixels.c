@@ -32,14 +32,14 @@ static void	put_pixel(t_texture *img, int x, int y, int color)
 
 void determine_texture_number(t_ray *ray)
 {
-	if (ray->side == 0 && ray->ray_dir_x >= 0)
-		ray->tex_num = 0;
-	else if (ray->side == 0 && ray->ray_dir_x < 0)
-		ray->tex_num = 1;
-	else if (ray->side == 1 && ray->ray_dir_y > 0)
-		ray->tex_num = 2;
+	if (ray->ray_calc.side == 0 && ray->ray_calc.ray_dir_x >= 0)
+		ray->ray_draw.tex_num = 0;
+	else if (ray->ray_calc.side == 0 && ray->ray_calc.ray_dir_x < 0)
+		ray->ray_draw.tex_num = 1;
+	else if (ray->ray_calc.side == 1 && ray->ray_calc.ray_dir_y > 0)
+		ray->ray_draw.tex_num = 2;
 	else
-		ray->tex_num = 3;
+		ray->ray_draw.tex_num = 3;
 }
 
 static void render_columns(t_ray *ray, int column, t_game *game, t_texture *texture)
@@ -49,16 +49,16 @@ static void render_columns(t_ray *ray, int column, t_game *game, t_texture *text
 	y = 0;
 	while (y < SCREEN_HEIGHT)
     {
-        if (y < ray->wall_start)
+        if (y < ray->ray_draw.wall_start)
         {
             put_pixel(&game->img, column, y, game->map->ceiling);
         }
-        else if (y < ray->wall_end)
+        else if (y < ray->ray_draw.wall_end)
         {
-            ray->tex_y = (int)ray->tex_pos % 64;
-            ray->tex_pos += ray->draw_step;
-            ray->color = get_color(texture, ray->tex_x, ray->tex_y);
-            put_pixel(&game->img, column, y, ray->color);
+            ray->ray_draw.tex_y = (int)ray->ray_draw.tex_pos % 64;
+            ray->ray_draw.tex_pos += ray->ray_draw.draw_step;
+            ray->ray_draw.color = get_color(texture, ray->ray_draw.tex_x, ray->ray_draw.tex_y);
+            put_pixel(&game->img, column, y, ray->ray_draw.color);
         }
         else
             put_pixel(&game->img, column, y, game->map->floor);
@@ -70,23 +70,23 @@ void draw_pixels(t_ray *ray, int column, t_game *game, t_player *player)
 {
     t_texture *texture;
     
-    if (ray->side == 0)
-        ray->wall_x = player->player_pos.pos_y + ray->perp_wall_dist * ray->ray_dir_y;
+    if (ray->ray_calc.side == 0)
+        ray->ray_draw.wall_x = player->player_pos.pos_y + ray->ray_calc.perp_wall_dist * ray->ray_calc.ray_dir_y;
     else 
-        ray->wall_x = player->player_pos.pos_x + ray->perp_wall_dist * ray->ray_dir_x;
+        ray->ray_draw.wall_x = player->player_pos.pos_x + ray->ray_calc.perp_wall_dist * ray->ray_calc.ray_dir_x;
     
     determine_texture_number(ray);
-    ray->wall_x -= floor(ray->wall_x);    
-    ray->tex_x = (int)(ray->wall_x * 64.0); 
+    ray->ray_draw.wall_x -= floor(ray->ray_draw.wall_x);    
+    ray->ray_draw.tex_x = (int)(ray->ray_draw.wall_x * 64.0); 
 
-    if ((ray->ray_dir_x < 0 && ray->side == 0) || (ray->ray_dir_y > 0 && ray->side == 1))
-        ray->tex_x = 64 - ray->tex_x - 1;
+    if ((ray->ray_calc.ray_dir_x < 0 && ray->ray_calc.side == 0) || (ray->ray_calc.ray_dir_y > 0 && ray->ray_calc.side == 1))
+        ray->ray_draw.tex_x = 64 - ray->ray_draw.tex_x - 1;
 
-    ray->draw_step = 1.0 * 64 / ray->wall_height; 
+    ray->ray_draw.draw_step = 1.0 * 64 / ray->ray_draw.wall_height; 
     
-    ray->tex_pos = (ray->wall_start - SCREEN_HEIGHT / 2 + ray->wall_height / 2) * ray->draw_step;
+    ray->ray_draw.tex_pos = (ray->ray_draw.wall_start - SCREEN_HEIGHT / 2 + ray->ray_draw.wall_height / 2) * ray->ray_draw.draw_step;
 
-    texture = &game->textures[ray->tex_num];
+    texture = &game->textures[ray->ray_draw.tex_num];
     render_columns(ray, column, game, texture);
 }
 
