@@ -28,7 +28,7 @@
 #include "../minilibx-linux/mlx.h"
 #include "../get_next_line/get_next_line.h"
 
-typedef struct s_player
+typedef struct s_player_pos
 {
 	char player_dir;
 	double pos_x;
@@ -37,14 +37,29 @@ typedef struct s_player
 	double plane_y;
 	double dir_x;
 	double dir_y;
-	double move_speed;
-	double rotation_speed;
+}				t_player_pos;
+
+typedef struct s_player_input
+{
 	int		move_forward;
 	int		move_backward;
 	int		move_left;
 	int		move_right;
 	int		rotate_left;
 	int		rotate_right;
+}		t_player_input;
+
+typedef struct s_player_speed
+{
+	double	move_speed;
+	double	rotation_speed;
+}		t_player_speed;
+
+typedef struct s_player
+{
+	t_player_pos		player_pos;
+	t_player_input		player_input;
+	t_player_speed		player_speed;
 }           t_player;
 
 typedef struct s_map
@@ -119,7 +134,7 @@ typedef struct s_mlx_content
 typedef struct s_game
 {
 	t_ray 		*ray;
-	t_mlx_content *mlx_content;
+	t_mlx_content mlx_content;
 	t_texture	textures[4];
 	t_texture	img;
 	t_map		*map;
@@ -165,7 +180,7 @@ void raycast(t_ray *ray, t_player *player, t_game *game);
 void render(t_game *game);
 int game_loop (t_game *game);
 
-void draw_pixels(t_ray *ray, int column, t_game *game);
+void draw_pixels(t_ray *ray, int column, t_game *game, t_player *player);
 int	get_color(t_texture *img, int x, int y);
 void determine_texture_number(t_ray *ray);
 

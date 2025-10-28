@@ -24,7 +24,7 @@ void raycast(t_ray *ray, t_player *player, t_game *game)
 		perform_dda(ray, game->map);
 		calculate_wall_distance(ray);
 		height_of_line_to_draw(ray);
-		draw_pixels(ray, column, game);
+		draw_pixels(ray, column, game, player);
 		column++;
 	}
 }
@@ -32,7 +32,7 @@ void raycast(t_ray *ray, t_player *player, t_game *game)
 void render(t_game *game)
 {
     raycast(game->ray, game->player, game);
-    mlx_put_image_to_window(game->mlx_content->mlx, game->mlx_content->win, game->img.img, 0, 0);
+    mlx_put_image_to_window(game->mlx_content.mlx, game->mlx_content.win, game->img.img, 0, 0);
 }
 
 int game_loop (t_game *game)

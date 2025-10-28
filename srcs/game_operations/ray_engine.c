@@ -15,10 +15,10 @@
 void init_rays (t_ray *ray, t_player *player, int column)
 {
 	ray->camera_x = 2 * column / (double)SCREEN_WIDTH - 1;
-	ray->ray_dir_x = player->dir_x + player->plane_x * ray->camera_x;
-	ray->ray_dir_y = player->dir_y + player->plane_y * ray->camera_x;
-	ray->map_x = (int)player->pos_x;
-	ray->map_y = (int)player->pos_y;
+	ray->ray_dir_x = player->player_pos.dir_x + player->player_pos.plane_x * ray->camera_x;
+	ray->ray_dir_y = player->player_pos.dir_y + player->player_pos.plane_y * ray->camera_x;
+	ray->map_x = (int)player->player_pos.pos_x;
+	ray->map_y = (int)player->player_pos.pos_y;
 	ray->hit = 0;
 	if (ray->ray_dir_x == 0)
 		ray->delta_dist_x = 1e30;
@@ -36,22 +36,22 @@ void step_and_sideDist(t_ray *ray, t_player *player)
 	if (ray->ray_dir_x < 0)
 	{
 		ray->step_x = -1;
-		ray->side_dist_x = (player->pos_x - ray->map_x) * ray->delta_dist_x;
+		ray->side_dist_x = (player->player_pos.pos_x - ray->map_x) * ray->delta_dist_x;
 	}
 	else
 	{
 		ray->step_x = 1;
-		ray->side_dist_x = (ray->map_x + 1.0 - player->pos_x) * ray->delta_dist_x;
+		ray->side_dist_x = (ray->map_x + 1.0 - player->player_pos.pos_x) * ray->delta_dist_x;
 	}
 	if (ray->ray_dir_y < 0)
 	{
 		ray->step_y = -1;
-		ray->side_dist_y = (player->pos_y - ray->map_y) * ray->delta_dist_y;
+		ray->side_dist_y = (player->player_pos.pos_y - ray->map_y) * ray->delta_dist_y;
 	}
 	else
 	{
 		ray->step_y = 1;
-		ray->side_dist_y = (ray->map_y + 1.0 - player->pos_y) * ray->delta_dist_y;
+		ray->side_dist_y = (ray->map_y + 1.0 - player->player_pos.pos_y) * ray->delta_dist_y;
 	}
 }
 

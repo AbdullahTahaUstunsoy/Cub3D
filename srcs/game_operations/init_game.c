@@ -14,33 +14,31 @@
 
 int set_mlx(t_game *game)
 {
-	t_mlx_content *mlx_content;
-
-	mlx_content = game->mlx_content;
-	mlx_content->mlx = mlx_init();
-	if (!mlx_content->mlx)
+	
+	game->mlx_content.mlx = mlx_init();
+	if (!game->mlx_content.mlx)
 	{
     	printf("Error: Failed to initialize MiniLibX (mlx_init)\n");
     	free_all(game);
 		return (1);
 	}
-	mlx_content->win = mlx_new_window(mlx_content->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3D");
-	if (!mlx_content->win)
+	game->mlx_content.win = mlx_new_window(game->mlx_content.mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3D");
+	if (!game->mlx_content.win)
 	{
     	printf("Error: Failed to create window (mlx_new_window)\n");
 		free_all(game);
 		return (1);
 	}
-	mlx_hook(mlx_content->win, 2, 1L<<0, press_the_key, game);
-	mlx_hook(mlx_content->win, 3, 1L<<1, release_the_key, game);
-	mlx_hook(mlx_content->win, 17, 0, close_the_window, game);
-	mlx_loop_hook(mlx_content->win, game_loop, game);
+	mlx_hook(game->mlx_content.win, 2, 1L<<0, press_the_key, game);
+	mlx_hook(game->mlx_content.win, 3, 1L<<1, release_the_key, game);
+	mlx_hook(game->mlx_content.win, 17, 0, close_the_window, game);
+	mlx_loop_hook(game->mlx_content.mlx, game_loop, game);
 	return (0);
 }
 
 int init_main_img(t_game *game)
 {
-	game->img.img = mlx_new_image(game->mlx_content->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
+	game->img.img = mlx_new_image(game->mlx_content.mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (!game->img.img)
 	{
 		printf("Error: Image could not be created!\n");
@@ -89,9 +87,6 @@ t_game *init_structs(void)
 		return(free_game(game));
 	game->ray = ft_calloc(1,sizeof(t_ray));
 	if(game->ray == NULL)
-		return(free_game(game));
-	game->mlx_content = ft_calloc(1, sizeof(t_mlx_content));
-	if(game->mlx_content == NULL)
 		return(free_game(game));
 	return (game);
 }

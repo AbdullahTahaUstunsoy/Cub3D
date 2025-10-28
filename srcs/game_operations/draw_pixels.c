@@ -66,14 +66,14 @@ static void render_columns(t_ray *ray, int column, t_game *game, t_texture *text
     }
 }
 
-void draw_pixels(t_ray *ray, int column, t_game *game)
+void draw_pixels(t_ray *ray, int column, t_game *game, t_player *player)
 {
     t_texture *texture;
     
     if (ray->side == 0)
-        ray->wall_x = game->player->pos_y + ray->perp_wall_dist * ray->ray_dir_y;
+        ray->wall_x = player->player_pos.pos_y + ray->perp_wall_dist * ray->ray_dir_y;
     else 
-        ray->wall_x = game->player->pos_x + ray->perp_wall_dist * ray->ray_dir_x;
+        ray->wall_x = player->player_pos.pos_x + ray->perp_wall_dist * ray->ray_dir_x;
     
     determine_texture_number(ray);
     ray->wall_x -= floor(ray->wall_x);    

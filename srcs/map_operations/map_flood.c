@@ -52,9 +52,9 @@ int	fill_player_struct(int x, int y, int flag, t_map *map)
 {
 	if (!flag)
 	{
-		map->player->pos_x = (double)x;
-		map->player->pos_y = (double)y;
-		map->player->player_dir = map->copy_map[y][x];
+		map->player->player_pos.pos_x = (double)x;
+		map->player->player_pos.pos_y = (double)y;
+		map->player->player_pos.player_dir = map->copy_map[y][x];
 		map->map[y][x] = '0';
 		map->copy_map[y][x] = '0';
 	}
@@ -89,7 +89,7 @@ int	find_player_position(t_map *map)
 			}
 		}
 	}
-	if (map->player->pos_x == -1.0 || map->player->pos_y == -1.0)
+	if (map->player->player_pos.pos_x == -1.0 || map->player->player_pos.pos_y == -1.0)
 		return (printf("There isn't any player!!!\n"), 1);
 	return (0);
 }

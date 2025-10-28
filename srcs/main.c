@@ -28,6 +28,6 @@ int main(int ac, char **av)
 	if (load_textures(game))
 		return (1);
 	render(game);
-	mlx_loop(game->mlx_content->mlx);
+	mlx_loop(game->mlx_content.mlx);
 	return (0);
 }

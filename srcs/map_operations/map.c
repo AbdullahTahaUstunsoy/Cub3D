@@ -51,8 +51,8 @@ void	map_init(t_game *game)
 	game->map->east = NULL;
 	game->map->west = NULL;
 	game->map->player = game->player;
-	game->map->player->pos_x = -1.0;
-	game->map->player->pos_y = -1.0;
+	game->player->player_pos.pos_x = -1.0;
+	game->player->player_pos.pos_y = -1.0;
 }
 
 int	double_map_check(t_map *map)
@@ -119,6 +119,9 @@ void	double_map_flood(t_map *map, int x, int y)
 
 int	fill_map_struct(char *map_file, t_map *map)
 {
+	t_player *player;
+
+	player = map->player;
 	map->fd = open(map_file, O_RDONLY);
 	if (map->fd == -1)
 		return (printf("Can't open the map file!\n"), 1);
@@ -127,8 +130,8 @@ int	fill_map_struct(char *map_file, t_map *map)
 	map->copy_map = copy_map(map);
 	if (!map->copy_map || map_control(map) || find_player_position(map))
 		return (1);
-	flood_fill(map, map->player->pos_x, map->player->pos_y, '0');
-	if (flood_check(map, map->player->pos_x, map->player->pos_y))
+	flood_fill(map, player->player_pos.pos_x, player->player_pos.pos_y, '0');
+	if (flood_check(map, player->player_pos.pos_x, player->player_pos.pos_y))
 		return (printf("Map is not closed!!!\n"), 1);
 	find_start_position(map);
 	double_map_flood(map, map->start_x, map->start_y);
