@@ -12,16 +12,16 @@
 
 #include "../includes/cub3D.h"
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	t_game *game;
+	t_game	*game;
 
 	if (ac != 2)
 		return (1);
 	game = init_structs();
 	if (game == NULL)
 		return (1);
-	if (map_operations(game,av))
+	if (map_operations(game, av))
 		return (1);
 	if (set_game_components(game))
 		return (1);

@@ -14,7 +14,7 @@
 
 int press_the_key(int keycode, void *param)
 {
-    t_game	*game;
+    t_game *game;
     t_player *player;
 
     game = (t_game *)param;
@@ -38,7 +38,7 @@ int press_the_key(int keycode, void *param)
 
 int release_the_key(int keycode, void *param)
 {
-    t_game	*game;
+    t_game *game;
     t_player *player;
 
     game = (t_game *)param;
@@ -70,16 +70,15 @@ int close_the_window(void *param)
     return (0);
 }
 
-
 void init_keys(t_game *game)
 {
     t_player *player;
 
     player = game->player;
-	player->player_input.move_forward = 0;
-	player->player_input.move_backward = 0;
-	player->player_input.move_left = 0;
-	player->player_input.move_right = 0;
-	player->player_input.rotate_left = 0;
-	player->player_input.rotate_right = 0;
+    player->player_input.move_forward = 0;
+    player->player_input.move_backward = 0;
+    player->player_input.move_left = 0;
+    player->player_input.move_right = 0;
+    player->player_input.rotate_left = 0;
+    player->player_input.rotate_right = 0;
 }

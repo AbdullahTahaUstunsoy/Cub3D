@@ -192,8 +192,6 @@ void render(t_game *game);
 int game_loop (t_game *game);
 
 void draw_pixels(t_ray *ray, int column, t_game *game, t_player *player);
-int	get_color(t_texture *img, int x, int y);
-void determine_texture_number(t_ray *ray);
 
 void init_rays (t_ray *ray, t_player *player, int column);
 void step_and_sideDist(t_ray *ray, t_player *player);

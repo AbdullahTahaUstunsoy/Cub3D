@@ -12,7 +12,7 @@
 
 #include "../../includes/cub3D.h"
 
-int set_mlx(t_game *game)
+int	set_mlx(t_game *game)
 {
 	
 	game->mlx_content.mlx = mlx_init();
@@ -22,7 +22,8 @@ int set_mlx(t_game *game)
     	free_all(game);
 		return (1);
 	}
-	game->mlx_content.win = mlx_new_window(game->mlx_content.mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3D");
+	game->mlx_content.win = mlx_new_window(game->mlx_content.mlx,
+		SCREEN_WIDTH, SCREEN_HEIGHT, "cub3D");
 	if (!game->mlx_content.win)
 	{
     	printf("Error: Failed to create window (mlx_new_window)\n");
@@ -36,9 +37,10 @@ int set_mlx(t_game *game)
 	return (0);
 }
 
-int init_main_img(t_game *game)
+int	init_main_img(t_game *game)
 {
-	game->img.img = mlx_new_image(game->mlx_content.mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
+	game->img.img = mlx_new_image(game->mlx_content.mlx,
+		SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (!game->img.img)
 	{
 		printf("Error: Image could not be created!\n");
@@ -57,11 +59,11 @@ int init_main_img(t_game *game)
 	return (0);
 }
 
-int set_game_components(t_game *game)
+int	set_game_components(t_game *game)
 {
-	if(set_mlx(game))
+	if (set_mlx(game))
 		return (1);
-	if(init_main_img(game))
+	if (init_main_img(game))
 		return (1);
 	init_keys(game);
 	set_direction(game->player);
@@ -71,9 +73,8 @@ int set_game_components(t_game *game)
 	return (0);
 }
 
-t_game *init_structs(void)
+t_game	*init_structs(void)
 {
-	// bu structları kendi içinde başlatmalı mıyım ?
 	t_game *game;
 	
 	game = ft_calloc(1, sizeof(t_game));
@@ -90,5 +91,3 @@ t_game *init_structs(void)
 		return(free_game(game));
 	return (game);
 }
-
-

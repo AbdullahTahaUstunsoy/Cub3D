@@ -12,9 +12,9 @@
 
 #include "../../includes/cub3D.h"
 
-void raycast(t_ray *ray, t_player *player, t_game *game)
+void	raycast(t_ray *ray, t_player *player, t_game *game)
 {
-	int column;
+	int	column;
 
 	column = 0;
 	while (column < SCREEN_WIDTH)
@@ -29,13 +29,14 @@ void raycast(t_ray *ray, t_player *player, t_game *game)
 	}
 }
 
-void render(t_game *game)
+void	render(t_game *game)
 {
     raycast(game->ray, game->player, game);
-    mlx_put_image_to_window(game->mlx_content.mlx, game->mlx_content.win, game->img.img, 0, 0);
+    mlx_put_image_to_window(game->mlx_content.mlx,
+		game->mlx_content.win, game->img.img, 0, 0);
 }
 
-int game_loop (t_game *game)
+int	game_loop(t_game *game)
 {
 	move(game);
 	render(game);
