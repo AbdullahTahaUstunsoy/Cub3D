@@ -1,65 +1,33 @@
-#include "../includes/cube3D.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/26 15:49:38 by austunso          #+#    #+#             */
+/*   Updated: 2025/10/26 15:49:38 by austunso         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-//color, r g b kullandım mı ? r << 16, g << 8 , b yapısını şuan göremedim gerekli mi ?
-int check_map_name(char *str)
+#include "../includes/cub3D.h"
+
+int	main(int ac, char **av)
 {
-	int	i;
-	int	flag;
-
-	flag = 0;
-	i = ft_strlen(str);
-	if (str[i - 1] != 'b')
-		flag = 1;
-	else if (str[i - 2] != 'u')
-		flag = 1;
-	else if (str[i - 3] != 'c')
-		flag = 1;
-	else if (str[i - 4] != '.')
-		flag = 1;
-	else if (str[i - 5] == '/') // OLMALI MI OLMAMALAI MI TAHAYA SORRRRRRRRR
-		flag = 1;
-	if (flag == 1)
-		printf("Wrong file name!\n");
-	return (flag);
-}
-
-void	map_init(t_game *game)
-{
-	game->map->fd = -2;
-	game->map->start_x = -1;
-	game->map->start_y = -1;
-	game->map->e_fd = -2;
-	game->map->s_fd = -2;
-	game->map->n_fd = -2;
-	game->map->w_fd = -2;
-	game->map->map_height = 0;
-	game->map->ceiling = -1;
-	game->map->floor = -1;
-	game->map->north = NULL;
-	game->map->south = NULL;
-	game->map->east = NULL;
-	game->map->west = NULL;
-	game->map->player = game->player; // bu saçma mı oldu
-	game->map->player->pos_x = -1.0;
-	game->map->player->pos_y = -1.0;
-}
-
-
-int main(int ac, char **av)
-{
-	t_game *game;
+	t_game	*game;
 
 	if (ac != 2)
 		return (1);
 	game = init_structs();
 	if (game == NULL)
 		return (1);
-	if (map_operations(game,av))
+	if (map_operations(game, av))
 		return (1);
 	if (set_game_components(game))
 		return (1);
-	load_textures(game);
+	if (load_textures(game))
+		return (1);
 	render(game);
-	mlx_loop(game->mlx);
+	mlx_loop(game->mlx_content.mlx);
 	return (0);
 }

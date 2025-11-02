@@ -1,0 +1,92 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_game.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/26 15:49:08 by austunso          #+#    #+#             */
+/*   Updated: 2025/11/01 16:21:08 by falakus          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/cub3D.h"
+
+int	set_mlx(t_game *game)
+{
+	game->mlx_content.mlx = mlx_init();
+	if (!game->mlx_content.mlx)
+	{
+		printf("Error: Failed to initialize MiniLibX (mlx_init)\n");
+		free_all(game);
+		return (1);
+	}
+	game->mlx_content.win = mlx_new_window(game->mlx_content.mlx,
+			SCREEN_WIDTH, SCREEN_HEIGHT, "cub3D");
+	if (!game->mlx_content.win)
+	{
+		printf("Error: Failed to create window (mlx_new_window)\n");
+		free_all(game);
+		return (1);
+	}
+	mlx_hook(game->mlx_content.win, 2, 1L << 0, press_the_key, game);
+	mlx_hook(game->mlx_content.win, 3, 1L << 1, release_the_key, game);
+	mlx_hook(game->mlx_content.win, 17, 0, close_the_window, game);
+	mlx_loop_hook(game->mlx_content.mlx, game_loop, game);
+	return (0);
+}
+
+int	init_main_img(t_game *game)
+{
+	game->img.img = mlx_new_image(game->mlx_content.mlx,
+			SCREEN_WIDTH, SCREEN_HEIGHT);
+	if (!game->img.img)
+	{
+		printf("Error: Image could not be created!\n");
+		free_all(game);
+		return (1);
+	}
+	game->img.addr = mlx_get_data_addr(game->img.img,
+			&game->img.bits_per_pixel, &game->img.line_length,
+			&game->img.endian);
+	if (!game->img.addr)
+	{
+		printf("Error : Image address could not be taken!\n");
+		free_all(game);
+		return (1);
+	}
+	return (0);
+}
+
+int	set_game_components(t_game *game)
+{
+	if (set_mlx(game))
+		return (1);
+	if (init_main_img(game))
+		return (1);
+	init_keys(game);
+	set_direction(game->player);
+	set_player(game->player);
+	set_camera_plane(game->player);
+	set_player_speed(game->player);
+	return (0);
+}
+
+t_game	*init_structs(void)
+{
+	t_game	*game;
+
+	game = ft_calloc(1, sizeof(t_game));
+	if (!game)
+		return (NULL);
+	game->player = ft_calloc(1, sizeof(t_player));
+	if (game->player == NULL)
+		return (free_game(game));
+	game->map = ft_calloc(1, sizeof(t_map));
+	if (game->map == NULL)
+		return (free_game(game));
+	game->ray = ft_calloc(1, sizeof(t_ray));
+	if (game->ray == NULL)
+		return (free_game(game));
+	return (game);
+}

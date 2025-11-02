@@ -6,11 +6,11 @@
 /*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 16:52:03 by falakus           #+#    #+#             */
-/*   Updated: 2025/10/25 19:34:39 by falakus          ###   ########.fr       */
+/*   Updated: 2025/11/01 17:43:15 by falakus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3D.h"
+#include "../../includes/cub3D.h"
 
 int	check_invalid_map_line(char *line)
 {
@@ -94,13 +94,13 @@ int	check_identifiers(t_map *map, char *identifier)
 	line = ft_strtrim(identifier, " ");
 	if (!line)
 		return (1);
-	if (!ft_strncmp(line, "NO ", 3))
+	if (!ft_strncmp(line, "NO ", 3) && !map->north)
 		map->north = ft_strtrim(line + 3, " ");
-	else if (!ft_strncmp(line, "SO ", 3))
+	else if (!ft_strncmp(line, "SO ", 3) && !map->south)
 		map->south = ft_strtrim(line + 3, " ");
-	else if (!ft_strncmp(line, "WE ", 3))
+	else if (!ft_strncmp(line, "WE ", 3) && !map->west)
 		map->west = ft_strtrim(line + 3, " ");
-	else if (!ft_strncmp(line, "EA ", 3))
+	else if (!ft_strncmp(line, "EA ", 3) && !map->east)
 		map->east = ft_strtrim(line + 3, " ");
 	else if (!ft_strncmp(line, "F ", 2))
 		map->floor = check_coloring(ft_strtrim(line + 2, " "));

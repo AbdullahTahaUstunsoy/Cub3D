@@ -6,11 +6,11 @@
 /*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 16:41:51 by falakus           #+#    #+#             */
-/*   Updated: 2025/10/25 18:12:40 by falakus          ###   ########.fr       */
+/*   Updated: 2025/11/01 12:38:32 by falakus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3D.h"
+#include "../../includes/cub3D.h"
 
 int	check_files(t_map *map)
 {
@@ -66,10 +66,7 @@ int	check_map_elements(t_map *map)
 {
 	char	*line;
 	char	*trim;
-	int		count;
 
-	count = 0;
-	map->map_size = 0;
 	map->map = malloc(sizeof(char *));
 	if (!map->map)
 		return (1);
@@ -77,19 +74,19 @@ int	check_map_elements(t_map *map)
 	line = get_next_line(map->fd);
 	while (line)
 	{
-		trim = adjust_line(map, line, count);
+		trim = adjust_line(map, line, map->count);
 		if (trim == NULL)
 		{
-			line = get_next_line(map->fd);	
+			line = get_next_line(map->fd);
 			continue ;
 		}
-		if (map_elements(map, trim, line, ++count))
+		if (map_elements(map, trim, line, ++map->count))
 			return (free(line), free(trim), get_next_line(-1), 1);
 		line = get_next_line(map->fd);
 	}
 	if (map->map_size == 0)
 		return (printf("Missing map!!!\n"), 1);
-	if (count == 0 && !line)
+	if (map->count == 0 && !line)
 		return (printf("Map is empty!!!\n"), 1);
 	return (0);
 }

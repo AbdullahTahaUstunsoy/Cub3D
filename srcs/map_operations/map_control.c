@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   map_control.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
+/*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 16:53:31 by falakus           #+#    #+#             */
-/*   Updated: 2025/10/25 19:51:36 by falakus          ###   ########.fr       */
+/*   Updated: 2025/10/26 15:43:03 by austunso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cube3D.h"
+#include "../../includes/cub3D.h"
 
 int	character_check(t_map *map)
 {
