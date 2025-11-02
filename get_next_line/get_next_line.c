@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: austunso <austunso@student.42.fr>          +#+  +:+       +#+        */
+/*   By: falakus <falakus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 18:46:52 by austunso          #+#    #+#             */
-/*   Updated: 2024/12/06 13:23:24 by austunso         ###   ########.fr       */
+/*   Updated: 2025/11/01 12:54:49 by falakus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,12 @@ char	*get_next_line(int fd)
 	static char	*buffer;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		if (buffer != NULL)
+			free(buffer);
+		buffer = NULL;
 		return (NULL);
+	}
 	buffer = i_have_one_line(fd, buffer);
 	if (buffer == NULL)
 		return (NULL);
