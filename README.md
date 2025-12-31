@@ -1,4 +1,4 @@
-#Cub3D - Ray-Casting Engine
+Cub3D - Ray-Casting Engine
 
 Bu proje, 1992 yapımı efsanevi **Wolfenstein 3D** oyunundan esinlenerek, C dili ve MiniLibX kütüphanesi ile geliştirilmiş bir 3D grafik motorudur. Temel amacı, ışın izleme (ray-casting) tekniğini kullanarak iki boyutlu bir haritadan birinci şahıs perspektifli bir görüntü elde etmektir.
 
@@ -33,4 +33,4 @@ Bu projeyi geliştirirken şu matematiksel ve teknik konseptleri uyguladım:
 2. Derleme yapın:
   make
 3. Oyunu başlatın:
-   ./cub3D maps/<a map name>.cub
+   ./cub3D maps/xxx.cub
